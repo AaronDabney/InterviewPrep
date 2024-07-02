@@ -1,8 +1,8 @@
 function asTabs(tabPanel) {
-    let buttons = [];
+    const buttons = [];
 
-    for (let childNode of tabPanel.children) {
-        let button = document.createElement('button');
+    for (const childNode of tabPanel.children) {
+        const button = document.createElement('button');
 
         button.addEventListener('click', () => setActiveTab(tabPanel, childNode, button));
         button.innerText = childNode.getAttribute("data-tabname");
@@ -10,12 +10,12 @@ function asTabs(tabPanel) {
         buttons.unshift(button);
     }
 
-    for (let button of buttons) {
+    for (const button of buttons) {
         tabPanel.prepend(button);
     }
 
     function setActiveTab(tabPanel, target, button) {
-        for (let child of tabPanel.children) {
+        for (const child of tabPanel.children) {
             if (child.getAttribute("data-tabname")) {
                 child.style.display = (child === target) ? '' : 'none'; 
             }
