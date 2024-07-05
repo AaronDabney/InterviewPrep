@@ -9,11 +9,11 @@ function evaluate(expr, scope) {
                 `Undefined binding: ${expr.name}`);
         }
     } else if (expr.type === "apply") {
-        let { operator, args } = expr;
+        const { operator, args } = expr;
         if (operator.type === "word" && operator.name in specialForms) {
             return specialForms[operator.name](expr.args, scope);
         } else {
-            let op = evaluate(operator, scope);
+            const op = evaluate(operator, scope);
             if (typeof op === "function") {
                 return op(...args.map(arg => evaluate(arg, scope)));
             } else {
@@ -50,7 +50,7 @@ specialForms.define = (args, scope) => {
         throw new SyntaxError("Incorrect use of define");
     }
 
-    let value = evaluate(args[1], scope);
+    const value = evaluate(args[1], scope);
     scope[args[0].name] = value;
     return value;
 };
@@ -72,9 +72,9 @@ specialForms.fun = (args, scope) => {
         throw new SyntaxError("Functions need a body");
     }
 
-    let body = args[args.length - 1];
+    const body = args[args.length - 1];
 
-    let params = args.slice(0, args.length - 1).map(expr => {
+    const params = args.slice(0, args.length - 1).map(expr => {
         if (expr.type !== "word") {
             throw new SyntaxError("Parameter names must be words");
         }
@@ -86,7 +86,7 @@ specialForms.fun = (args, scope) => {
             throw new TypeError("Wrong number of arguments");
         }
 
-        let localScope = Object.create(scope);
+        const localScope = Object.create(scope);
         for (let i = 0; i < args.length; i++) {
             localScope[params[i]] = args[i];
         }

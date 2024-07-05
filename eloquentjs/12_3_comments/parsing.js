@@ -1,5 +1,5 @@
 function skipSpace(string) {
-    let first = string.search(/\S/);
+    const first = string.search(/\S/);
     return (first === -1) ? "" : string.slice(first);
 }
 
@@ -7,8 +7,8 @@ function skipComment(string) {
     if (string[0] !== '#') {
         return string;
     }
-    let regexp = /(\s*#+.*)+\s*/d;
-    let endOfCommentsIndex = regexp.exec(string).indices[0][1];
+    const regexp = /(\s*#+.*)+\s*/d;
+    const endOfCommentsIndex = regexp.exec(string).indices[0][1];
     return (endOfCommentsIndex === -1) ? "" : string.slice(endOfCommentsIndex);
 }
 
@@ -43,7 +43,7 @@ function parseApply(expr, program) {
         expr = { type: "apply", operator: expr, args: [] };
 
         while (program[0] !== ")") {
-            let arg = parseExpression(program);
+            const arg = parseExpression(program);
             expr.args.push(arg.expr);
             program = cleanProgramString(arg.rest);
 
@@ -62,7 +62,7 @@ function parseApply(expr, program) {
 }
 
 function parse(program) {
-    let { expr, rest } = parseExpression(program);
+    const { expr, rest } = parseExpression(program);
 
     parsingError = cleanProgramString(rest).length > 0;
 

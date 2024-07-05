@@ -36,7 +36,7 @@ function run(program) {
     return evaluate(parse(program), topScope);
 }
 
-let program = 
+const program = 
 `do(define(f, fun(a, fun(b, +(a, b)))),
    # we are printing below
     print(f(4)(5))) # we are printing to the left
