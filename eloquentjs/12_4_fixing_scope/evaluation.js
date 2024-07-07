@@ -64,8 +64,8 @@ specialForms.set = (args, scope) => {
     const value = evaluate(args[1], scope);
 
     let currentScope = scope;
-    
-    while (currentScope !== null) {
+
+    while (currentScope) {
         if (Object.hasOwn(currentScope, varName)) {
             currentScope[varName] = value;
             return value;
