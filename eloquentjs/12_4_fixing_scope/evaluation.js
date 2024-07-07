@@ -55,6 +55,28 @@ specialForms.define = (args, scope) => {
     return value;
 };
 
+specialForms.set = (args, scope) => {
+    if (args.length !== 2 || args[0].type !== "word") {
+        throw new SyntaxError("Incorrect use of set");
+    }
+
+    const varName = args[0].name;
+    const value = evaluate(args[1], scope);
+
+    let currentScope = scope;
+    
+    while (currentScope !== null) {
+        if (Object.hasOwn(currentScope, varName)) {
+            currentScope[varName] = value;
+            return value;
+        }
+
+        currentScope = Object.getPrototypeOf(currentScope);
+    }
+
+    throw new ReferenceError("Cannot set an undeclared variable");
+}
+
 specialForms.while = (args, scope) => {
     if (args.length !== 2) {
         throw new SyntaxError("Wrong number of args to while");

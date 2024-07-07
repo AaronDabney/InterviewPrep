@@ -36,20 +36,13 @@ function run(program) {
     return evaluate(parse(program), topScope);
 }
 
-const program = 
-`do(define(f, fun(a, fun(b, +(a, b)))),
-   # we are printing below
-    print(f(4)(5))) # we are printing to the left
-   # we are printing above
-   # trailing comment`;
+run(`
+    do(define(x, 4),
+       define(setx, fun(val, set(x, val))),
+       setx(50),
+       print(x))
+`);
+// → 50
 
-run(program);
-// output --> 9
-
-console.log(parse("# hello\nx"));
-// → {type: "word", name: "x"}
-
-console.log(parse("a # one\n   # two\n()"));
-// → {type: "apply",
-//    operator: {type: "word", name: "a"},
-//    args: []}
+run(`set(quux, true)`);
+// → Some kind of ReferenceError
