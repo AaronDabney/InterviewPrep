@@ -12,6 +12,10 @@ class Vec {
         return new Vec(this.x - input.x, this.y - input.y)
     }
 
+    times(input) {
+        return new Vec(this.x * input, this.y * input);
+    }
+
     dot(input) {
         return this.x * input.x + this.y * input.y;
     }
