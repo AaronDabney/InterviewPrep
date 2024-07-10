@@ -24,6 +24,13 @@ class Vec {
         return new Vec(this.x / this.length, this.y / this.length);
     }
 
+    lerp(input, t) {
+        t = Math.max(t, 0);
+        t = Math.min(t, 1);
+
+        return new Vec(this.x * (1 - t) + input.x * t, this.y * (1 - t) + input.y * t)
+    }
+
     get length() {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }

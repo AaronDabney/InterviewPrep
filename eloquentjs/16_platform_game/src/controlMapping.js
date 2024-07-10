@@ -4,7 +4,7 @@ function controlMapping(controlPairs) {
     function track(event) {
         for (let [command, key] of controlPairs) {
             if (event.key === key) {
-                down[command] = event.type == "keydown";
+                down[command] = event.type === "keydown";
             }
         }
     }

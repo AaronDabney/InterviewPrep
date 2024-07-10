@@ -10,26 +10,26 @@ class State {
     }
     
     get player() {
-        return this.actors.find(a => a.type == "player");
+        return this.actors.find(a => a.type === "player");
     }
 
-    update(time, keys) {
-        let actors = this.actors.map(actor => actor.update(time, this, keys));
+    update(deltaTime, keys) {
+        const actors = this.actors.map(actor => actor.update(deltaTime, this, keys));
 
         let newState = new State(this.level, actors, this.status);
 
-        if (newState.status != "playing") {
+        if (newState.status !== "playing") {
             return newState;
         }
 
-        let player = newState.player;
+        const player = newState.player;
 
         if (this.level.touches(player.pos, player.size, "lava")) {
             return new State(this.level, actors, "lost");
         }
 
         for (let actor of actors) {
-            if (actor != player && overlap(actor, player)) {
+            if (actor !== player && overlap(actor, player)) {
                 newState = actor.collide(newState);
             }
         }

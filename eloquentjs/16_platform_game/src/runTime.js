@@ -2,12 +2,13 @@ import { Level } from './level.js'
 import { State } from './state.js'
 
 async function runGame(plans, Display, controls) {
-    let lives = 3;
+    const maxLives = 3
+    let lives = maxLives;
 
     for (let level = 0; level < plans.length;) {
         console.log(`${lives} lives remain`);
-        
-        let status = await runLevel(new Level(plans[level]), Display, controls);
+
+        const status = await runLevel(new Level(plans[level]), Display, controls);
 
         if (status == "won") {
             level++;
@@ -19,7 +20,9 @@ async function runGame(plans, Display, controls) {
 
         if (lives === 0) {
             console.log("YOU DIED");
-            return runGame(plans, Display, controls)
+            
+            level = 0;
+            lives = maxLives;
         }
     }
 
@@ -28,7 +31,7 @@ async function runGame(plans, Display, controls) {
 
 
 function runLevel(level, Display, controls) {
-    let display = new Display(document.body, level);
+    const display = new Display(document.body, level);
     let state = State.start(level);
     let ending = 1;
 
@@ -56,8 +59,8 @@ function runAnimation(frameFunc) {
     let lastTime = null;
 
     function frame(time) {
-        if (lastTime != null) {
-            let deltaTime = Math.min(time - lastTime, 100) / 1000;
+        if (lastTime !== null) {
+            const deltaTime = Math.min(time - lastTime, 100) / 1000;
             if (frameFunc(deltaTime) === false) {
                 return;
             } 
@@ -70,4 +73,4 @@ function runAnimation(frameFunc) {
     requestAnimationFrame(frame);
 }
 
-export {runGame, runLevel, runAnimation}
+export { runGame, runLevel, runAnimation }
