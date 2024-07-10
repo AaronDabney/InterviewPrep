@@ -1,6 +1,7 @@
 class DOMDisplay {
     constructor(parent, level) {
-        this.dom = buildNode("div", {class: "game"}, drawGrid(level));
+        this.scale = 20;
+        this.dom = buildNode("div", {class: "game"}, drawGrid(level, this.scale));
         this.actorLayer = null;
         parent.appendChild(this.dom)
     }
@@ -13,7 +14,7 @@ class DOMDisplay {
         if (this.actorLayer) {
             this.actorLayer.remove();
         }
-        this.actorLayer = drawActors(state.actors);
+        this.actorLayer = drawActors(state.actors, this.scale);
         this.dom.appendChild(this.actorLayer);
         this.dom.className = `game ${state.status}`;
         this.scrollPlayerIntoView(state);
@@ -29,7 +30,7 @@ class DOMDisplay {
         let top = this.dom.scrollTop, bottom = top + height;
       
         let player = state.player;
-        let center = player.pos.plus(player.size.times(0.5)).times(scale);
+        let center = player.pos.plus(player.size.times(0.5)).times(this.scale);
       
         if (center.x < left + margin) {
             this.dom.scrollLeft = center.x - margin;
@@ -43,6 +44,7 @@ class DOMDisplay {
         }
     }
 }
+
 
 function buildNode(name, attrs, ...children) {
     let dom = document.createElement(name);
@@ -58,16 +60,16 @@ function buildNode(name, attrs, ...children) {
     return dom;
 }
 
-const scale = 20;
 
-function drawGrid(level) {
+function drawGrid(level, scale) {
   return buildNode("table", { class: "background", style: `width: ${level.width * scale}px` },
      ...level.rows.map(row => buildNode("tr", { style: `height: ${scale}px` },
         ...row.map(type => buildNode("td", { class: type })))
   ));
 }
 
-function drawActors(actors) {
+
+function drawActors(actors, scale) {
     return buildNode("div", {}, ...actors.map(actor => {
         let rect = buildNode("div", {class: `actor ${actor.type}`});
         rect.style.width = `${actor.size.x * scale}px`;

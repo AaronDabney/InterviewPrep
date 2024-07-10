@@ -16,16 +16,16 @@ class Player {
         return new Player(pos.plus(new Vec(0, -0.5)), new Vec(0, 0));
     }
 
-    update(time, state, keys) {
+    update(time, state, commands) {
         const playerXSpeed = 7;
         const gravity = 30;
         const jumpSpeed = 17;
         let xSpeed = 0;
 
-        if (keys.ArrowLeft) {
+        if (commands.left) {
             xSpeed -= playerXSpeed;
         } 
-        if (keys.ArrowRight) {
+        if (commands.right) {
             xSpeed += playerXSpeed;
         }
 
@@ -41,7 +41,7 @@ class Player {
 
         if (!state.level.touches(movedY, this.size, "wall")) {
             pos = movedY;
-        } else if (keys.ArrowUp && ySpeed > 0) {
+        } else if (commands.jump && ySpeed > 0) {
             ySpeed = -jumpSpeed;
         } else {
             ySpeed = 0;
@@ -50,7 +50,6 @@ class Player {
         return new Player(pos, new Vec(xSpeed, ySpeed));
     }
 }
-
 
 
 class Lava {
@@ -91,6 +90,7 @@ class Lava {
     }
 }
 
+
 class Coin {
     constructor(pos, basePos, wobble) {
         this.pos = pos;
@@ -126,6 +126,5 @@ class Coin {
         return new Coin(this.basePos.plus(new Vec(0, wobblePos)), this.basePos, wobble);
     }
 }
-
 
 export { Player, Lava, Coin}

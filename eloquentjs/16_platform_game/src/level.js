@@ -1,5 +1,5 @@
 import { Vec } from './vector.js';
-import { levelChars } from './levelChars.js';
+import { Player, Lava, Coin } from "./actors.js";
 
 class Level {
     constructor(plan) {
@@ -41,4 +41,16 @@ class Level {
     }
 }
 
-export { Level }
+
+const levelChars = {
+    ".": "empty", 
+    "#": "wall", 
+    "+": "lava",
+    "@": Player, 
+    "o": Coin,
+    "=": Lava, 
+    "|": Lava, 
+    "v": Lava
+};
+
+export { Level, levelChars }
