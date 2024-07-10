@@ -44,5 +44,22 @@ run(`
 `);
 // → 50
 
+run(`
+    do(define(x, 4),
+       define(addToX, fun(val,  do(set(x, +(x, val))                          
+       ))),
+       addToX(30),
+       print(x))
+`);
+// → 34
+
+run(`
+    do(define(x, 0),
+        while(<(x, 10),   
+            do(set(x, +(x, 1)), 
+               print(x))))
+`)
+// prints 1 to 10
+
 run(`set(quux, true)`);
 // → Some kind of ReferenceError
