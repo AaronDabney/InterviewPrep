@@ -3,6 +3,7 @@ class DOMDisplay {
         this.scale = 20;
         this.dom = buildNode("div", {class: "game"}, drawGrid(level, this.scale));
         this.actorLayer = null;
+        
         parent.appendChild(this.dom)
     }
 
@@ -74,11 +75,13 @@ function drawGrid(level, scale) {
 
 function drawActors(actors, scale) {
     return buildNode("div", {}, ...actors.map(actor => {
-        let rect = buildNode("div", {class: `actor ${actor.type}`});
+        const rect = buildNode("div", {class: `actor ${actor.type}`});
+
         rect.style.width = `${actor.size.x * scale}px`;
         rect.style.height = `${actor.size.y * scale}px`;
         rect.style.left = `${actor.pos.x * scale}px`;
         rect.style.top = `${actor.pos.y * scale}px`;
+
         return rect;
     }));
 }

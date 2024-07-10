@@ -31,6 +31,7 @@ class Level {
             for (let x = xStart; x < xEnd; x++) {
                 const isOutside = x < 0 || x >= this.width || y < 0 || y >= this.height;
                 const here = isOutside ? "wall" : this.rows[y][x];
+                
                 if (here === type) {
                     return true;
                 }

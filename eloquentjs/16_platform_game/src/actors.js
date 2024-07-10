@@ -20,27 +20,25 @@ class Player {
         const playerXSpeed = 7;
         const gravity = 30;
         const jumpSpeed = 17;
-        let xSpeed = 0;
-
-        if (commands.left) {
-            xSpeed -= playerXSpeed;
-        } 
-        if (commands.right) {
-            xSpeed += playerXSpeed;
-        }
 
         let pos = this.pos;
-        const movedX = pos.plus(new Vec(xSpeed * deltaTime, 0));
 
-        if (!state.level.touches(movedX, this.size, "wall")) {
-            pos = movedX;
-        }
-      
+        let xSpeed = !!commands.left * -playerXSpeed + !!commands.right * playerXSpeed;
         let ySpeed = this.speed.y + deltaTime * gravity;
-        const movedY = pos.plus(new Vec(0, ySpeed * deltaTime));
 
-        if (!state.level.touches(movedY, this.size, "wall")) {
-            pos = movedY;
+        const xDelta = new Vec(xSpeed * deltaTime, 0);
+        const yDelta = new Vec(0, ySpeed * deltaTime);
+    
+        let wontCollideWithWall = !state.level.touches(pos.plus(xDelta), this.size, "wall");
+
+        if (wontCollideWithWall) {
+            pos = pos.plus(xDelta);
+        }
+
+        let wontCollideWithGround = !state.level.touches(pos.plus(yDelta), this.size, "wall");
+        
+        if (wontCollideWithGround) {
+            pos = pos.plus(yDelta);
         } else if (commands.jump && ySpeed > 0) {
             ySpeed = -jumpSpeed;
         } else {
@@ -80,7 +78,9 @@ class Lava {
 
     update(deltaTime, state) {
         const newPos = this.pos.plus(this.speed.times(deltaTime));
-        if (!state.level.touches(newPos, this.size, "wall")) {
+        const newPositionTouchesWall = state.level.touches(newPos, this.size, "wall") 
+
+        if (!newPositionTouchesWall) {
             return new Lava(newPos, this.speed, this.reset);
         } else if (this.reset) {
             return new Lava(this.reset, this.speed, this.reset);
@@ -109,20 +109,18 @@ class Coin {
     }
 
     collide (state) {
-        const filtered = state.actors.filter(a => a !== this);
-        let status = state.status;
-        
-        if (!filtered.some(a => a.type === "coin")) {
-            status = "won";
-        }
+        const actorsExcludingSelf = state.actors.filter(a => a !== this);
+        const coinsRemaining = actorsExcludingSelf.some(a => a.type === "coin"); 
+        const status = coinsRemaining ? state.status : "won";
 
-        return new State(state.level, filtered, status);
+        return new State(state.level, actorsExcludingSelf, status);
     }
 
     update(deltaTime) {
         const wobbleSpeed = 8, wobbleDist = 0.07;
         const wobble = this.wobble + deltaTime * wobbleSpeed;
         const wobblePos = Math.sin(wobble) * wobbleDist;
+        
         return new Coin(this.basePos.plus(new Vec(0, wobblePos)), this.basePos, wobble);
     }
 }

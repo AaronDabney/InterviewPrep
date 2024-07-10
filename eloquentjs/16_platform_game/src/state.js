@@ -23,8 +23,9 @@ class State {
         }
 
         const player = newState.player;
-
-        if (this.level.touches(player.pos, player.size, "lava")) {
+        let playerTouchingLava = this.level.touches(player.pos, player.size, "lava");
+        
+        if (playerTouchingLava) {
             return new State(this.level, actors, "lost");
         }
 

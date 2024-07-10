@@ -10,11 +10,11 @@ async function runGame(plans, Display, controls) {
 
         const status = await runLevel(new Level(plans[level]), Display, controls);
 
-        if (status == "won") {
+        if (status === "won") {
             level++;
         }
 
-        if (status == "lost") {
+        if (status === "lost") {
             lives--;
         }
 
@@ -33,7 +33,7 @@ async function runGame(plans, Display, controls) {
 function runLevel(level, Display, controls) {
     const display = new Display(document.body, level);
     let state = State.start(level);
-    let ending = 1;
+    let levelEndDelay = 1;
 
     return new Promise(resolve => {
         runAnimation(deltaTime => {
@@ -42,8 +42,8 @@ function runLevel(level, Display, controls) {
             
             if (state.status == "playing") {
                 return true;
-            } else if (ending > 0) {
-                ending -= deltaTime;
+            } else if (levelEndDelay > 0) {
+                levelEndDelay -= deltaTime;
                 return true;
             } else {
                 display.clear();
