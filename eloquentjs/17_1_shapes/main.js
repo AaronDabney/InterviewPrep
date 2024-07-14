@@ -21,13 +21,13 @@ function trapezoid(ctx, transform, topWidth, bottomWidth, height) {
     ctx.restore();
 }
 
-function square(ctx, transform, size, color) {
+function square(ctx, transform, sideLength, color) {
     ctx.save();
 
     ctx.translate(transform.x, transform.y);
     ctx.rotate(transform.rotation)
 
-    const dist = size / 2
+    const dist = sideLength / 2
 
     const path = new Path2D();
     path.moveTo(-dist, -dist);
