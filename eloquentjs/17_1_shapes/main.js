@@ -1,34 +1,15 @@
-let canvas = document.getElementById("myCanvas");
-let ctx = canvas.getContext('2d');
+const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext('2d');
 
-let spacing = canvas.width / 6;
-
-trapezoid(ctx, {x: spacing, 
-                y: 300,
-                rotation: 0},
-                40, 80, 50);
-
-square(ctx, {x: spacing * 2, 
-             y: 300,
-             rotation: Math.PI / 4},
-             60);
-
-//square(ctx, new Vector2(spacing * 2, 300), Math.PI/4, 60);
-
-zigZag(ctx, new Vector2(spacing * 3, 300), Math.PI/2, 80, 80, 13);
-
-spiral(ctx, new Vector2(spacing * 4, 300), 0, 50);
-
-star(ctx, new Vector2(spacing * 5, 300), 0, 50, 4);
-
+const spacing = canvas.width / 6;
 
 function trapezoid(ctx, transform, topWidth, bottomWidth, height) {
     ctx.save();
 
     ctx.translate(transform.x, transform.y)
     ctx.rotate(transform.rotation)
-    
-    let path = new Path2D();
+
+    const path = new Path2D();
     path.moveTo(-topWidth / 2, -height / 2);
     path.lineTo( topWidth / 2, -height / 2);
     path.lineTo( bottomWidth / 2, height / 2);
@@ -40,15 +21,15 @@ function trapezoid(ctx, transform, topWidth, bottomWidth, height) {
     ctx.restore();
 }
 
-function square(ctx, position, rotation, size, color = 'red') {
+function square(ctx, transform, size, color) {
     ctx.save();
 
-    ctx.translate(position.x, position.y);
-    ctx.rotate(rotation)
+    ctx.translate(transform.x, transform.y);
+    ctx.rotate(transform.rotation)
 
-    let dist = size / 2
+    const dist = size / 2
 
-    let path = new Path2D();
+    const path = new Path2D();
     path.moveTo(-dist, -dist);
     path.lineTo( dist, -dist);
     path.lineTo( dist,  dist);
@@ -61,11 +42,11 @@ function square(ctx, position, rotation, size, color = 'red') {
     ctx.restore();
 }
 
-function zigZag(ctx, position, rotation, width, height, iterations) {
+function zigZag(ctx, transform, width, height, iterations) {
     ctx.save();
 
-    ctx.translate(position.x, position.y)
-    ctx.rotate(rotation);
+    ctx.translate(transform.x, transform.y)
+    ctx.rotate(transform.rotation);
 
     ctx.beginPath();
     ctx.moveTo(-width / 2, height / 2);
@@ -80,36 +61,35 @@ function zigZag(ctx, position, rotation, width, height, iterations) {
     ctx.restore();
 }
 
-function spiral(ctx, position, rotation, size, windings = 3) {
+function spiral(ctx, transform, size, windings = 3) {
     ctx.save();
 
-    ctx.translate(position.x, position.y)
-    ctx.rotate(rotation);
+    ctx.translate(transform.x, transform.y)
+    ctx.rotate(transform.rotation);
 
-    
     ctx.moveTo(0, 0);
 
-    let iterations = 100;
+    const iterations = 100;
     for (let i = 0; i < iterations; i++) {
-        let angle = (1 / iterations) * Math.PI * 2 * windings;
+        ctx.rotate((1 / iterations) * Math.PI * 2 * windings);
         ctx.lineTo(0, (i / iterations) * size);
-        ctx.rotate(angle);
     }
 
     ctx.stroke();
+
     ctx.restore();
 }
 
-function star(ctx, position, rotation, scale, frequency, color = 'orange') {
+function star(ctx, transform, scale, flareFrequency, color) {
     ctx.save();
 
-    ctx.translate(position.x, position.y)
-    ctx.rotate(rotation);
-
-    let path = new Path2D();
+    ctx.translate(transform.x, transform.y)
+    ctx.rotate(transform.rotation);
+    
+    const path = new Path2D();
     path.moveTo(scale, 0);
     for (let i = 0; i < Math.PI * 2; i += .01) {
-        let radius = (1 - 0.5 * Math.cbrt(Math.abs(Math.sin(i * frequency)))) * scale;
+        const radius = (1 - 0.5 * Math.cbrt(Math.abs(Math.sin(i * flareFrequency)))) * scale;
         path.lineTo(Math.cos(i) * radius, Math.sin(i) * radius);
     }
     path.closePath();
@@ -120,3 +100,23 @@ function star(ctx, position, rotation, scale, frequency, color = 'orange') {
     ctx.restore();
 }
 
+
+trapezoid(ctx, {x: spacing, 
+                y: 300,
+                rotation: 0}, 50, 100, 50);
+
+square(ctx, {x: spacing * 2, 
+             y: 300,
+             rotation: Math.PI / 4}, 60, 'red')
+
+zigZag(ctx, {x: spacing * 3, 
+             y: 300,
+             rotation: Math.PI / 2}, 80, 80, 13)
+
+spiral(ctx, {x: spacing * 4, 
+             y: 300,
+             rotation: 0}, 50);
+
+star(ctx, {x: spacing * 5, 
+           y: 300,
+           rotation: 0}, 50, 4, 'orange');
