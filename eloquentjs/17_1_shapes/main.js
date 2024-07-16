@@ -101,22 +101,27 @@ function star(ctx, transform, scale, flareFrequency, color) {
 }
 
 
-trapezoid(ctx, {x: spacing, 
-                y: 300,
-                rotation: 0}, 50, 100, 50);
+trapezoid(
+    ctx, {x: spacing, y: 300, rotation: 0},
+    50, 100, 50
+);
 
-square(ctx, {x: spacing * 2, 
-             y: 300,
-             rotation: Math.PI / 4}, 60, 'red')
+square(
+    ctx, {x: spacing * 2, y: 300, rotation: Math.PI / 4},
+    60, 'red'
+);
 
-zigZag(ctx, {x: spacing * 3, 
-             y: 300,
-             rotation: Math.PI / 2}, 80, 80, 13)
+zigZag(
+    ctx, {x: spacing * 3, y: 300, rotation: Math.PI / 2},
+    80, 80, 13
+);
 
-spiral(ctx, {x: spacing * 4, 
-             y: 300,
-             rotation: 0}, 50);
+spiral(
+    ctx, {x: spacing * 4, y: 300, rotation: 0},
+    50
+);
 
-star(ctx, {x: spacing * 5, 
-           y: 300,
-           rotation: 0}, 50, 4, 'orange');
+star(
+    ctx, {x: spacing * 5, y: 300, rotation: 0},
+    50, 4, 'orange'
+);
