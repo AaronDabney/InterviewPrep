@@ -9,6 +9,13 @@ function controlMapping(controlPairs) {
         }
     }
 
+    down.removeListeners = () => {
+        console.log("Removing event listeners");
+        window.removeEventListener("keydown", track);
+        window.removeEventListener("keyup", track);
+    }
+
+    console.log("Adding event listeners");
     window.addEventListener("keydown", track);
     window.addEventListener("keyup", track);
 

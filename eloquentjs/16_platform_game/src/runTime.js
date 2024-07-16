@@ -1,5 +1,6 @@
 import { Level } from './level.js'
 import { State } from './state.js'
+import { controlMapping } from './controlMapping.js';
 
 async function runGame(plans, Display, controls) {
     const maxLives = 3
@@ -32,6 +33,7 @@ async function runGame(plans, Display, controls) {
 
 function runLevel(level, Display, controls) {
     const display = new Display(document.body, level);
+    const controller = controlMapping(controls);
     let state = State.start(level);
     let levelEndDelay = 1;
 
@@ -41,7 +43,7 @@ function runLevel(level, Display, controls) {
 
     return new Promise(resolve => {
         runAnimation(deltaTime => {
-            const pauseToggle = controls.pause;
+            const pauseToggle = controller.pause;
 
             if (pauseToggle && pauseToggleTimer <= 0) {
                 paused = !paused
@@ -55,8 +57,8 @@ function runLevel(level, Display, controls) {
             if (paused) {
                 deltaTime = 0;
             }
-
-            state = state.update(deltaTime, controls);
+        
+            state = state.update(deltaTime, controller);
             display.syncState(state);
             
             if (state.status == "playing") {
@@ -66,6 +68,7 @@ function runLevel(level, Display, controls) {
                 return true;
             } else {
                 display.clear();
+                controller.removeListeners();
                 resolve(state.status);
                 return false;
             }
