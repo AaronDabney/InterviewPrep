@@ -35,8 +35,27 @@ function runLevel(level, Display, controls) {
     let state = State.start(level);
     let levelEndDelay = 1;
 
+    let paused = false;
+    const pauseDebounceTime = 0.1;
+    let pauseToggleTimer = pauseDebounceTime;
+
     return new Promise(resolve => {
         runAnimation(deltaTime => {
+            const pauseToggle = controls.pause;
+
+            if (pauseToggle && pauseToggleTimer <= 0) {
+                paused = !paused
+                pauseToggleTimer = pauseDebounceTime;
+            }
+
+            if (pauseToggleTimer > 0) {
+                pauseToggleTimer -= deltaTime;
+            }
+            
+            if (paused) {
+                deltaTime = 0;
+            }
+
             state = state.update(deltaTime, controls);
             display.syncState(state);
             

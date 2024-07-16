@@ -6,7 +6,8 @@ import { DOMDisplay } from './src/display.js'
 const controls = controlMapping([
     ["left", "ArrowLeft"], 
     ["right", "ArrowRight"], 
-    ["jump", "ArrowUp"]
+    ["jump", "ArrowUp"],
+    ["pause", "Escape"]
 ]);
 
 runGame(GAME_LEVELS, DOMDisplay, controls);
