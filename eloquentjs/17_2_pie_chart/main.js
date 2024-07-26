@@ -41,6 +41,7 @@ function drawPieChart(results, ctx) {
 
     let currentAngle = startingAngle;
 
+    // Draw slices
     for (let result of results) {
         const sliceAngle = (result.count / resultsTotal) * 2 * Math.PI;
 
@@ -59,6 +60,7 @@ function drawPieChart(results, ctx) {
     let fontSize;
     currentAngle = startingAngle;
 
+    // Apply labels
     for (let result of results) {
         const sliceAngle = (result.count / resultsTotal) * 2 * Math.PI;
         
