@@ -1,111 +1,106 @@
-import { Polygon, drawPoly, isPolygonInPolygon, isPointInPolygon} from "./src/polygon.js";
 import { Vector2 } from "./src/vector2.js";
 
+
+const randomRGBString = () => `rgb(${64 + Math.random() * 192}, ${64 + Math.random() * 192}, ${64 + Math.random() * 192})`
+
+
 const surveyResults = [
-    {name: "Satisfied", count: 1043, color: "lightblue"},
-    {name: "Neutral", count: 563, color: "lightgreen"},
-    {name: "Unsatisfied", count: 510, color: "pink"},
-    {name: "No comment", count: 175, color: "silver"}
+    {name: "Satisfied"  , count: Math.random(), color: randomRGBString()},
+    {name: "Neutral"    , count: Math.random(), color: randomRGBString()},
+    {name: "Unsatisfied", count: Math.random(), color: randomRGBString()},
+    {name: "No comment" , count: Math.random(), color: randomRGBString()}
 ];
 
-drawPieChart(surveyResults, "pieChartCanvas");
 
-function drawPieChart(results, canvasID) {
-    let canvas = document.getElementById(canvasID);
-    let ctx = canvas.getContext("2d");  
+const drawingContext = document.getElementById("pieChartCanvas").getContext("2d");
 
-    let xCenter = canvas.width / 2;
-    let yCenter = canvas.height / 2;
 
-    let center = new Vector2(xCenter, yCenter);
+function chartTest() {
+    for (let result of surveyResults) {
+        const countRandomDrift = (Math.random() - 0.5) * .001;
+        const countWobble = Math.sin(Date.now() * 0.002) * 0.002
 
-    let total = results.reduce((sum, {count}) => sum + count, 0)
-    let startingAngle = -0.5 * Math.PI;
+        result.count = Math.max(0, result.count + countRandomDrift + countWobble);
+    } 
+
+    drawPieChart(surveyResults, drawingContext);
+    requestAnimationFrame(chartTest);
+}
+
+
+function drawPieChart(results, ctx) {
+    const canvasCenter = new Vector2(ctx.canvas.clientWidth / 2, ctx.canvas.clientHeight / 2);
+    const pieRadius = Math.min(canvasCenter.x * 0.9, canvasCenter.y * 0.9);
+    const labelSpacingPercentage = .1;
+
+    const resultsTotal = results.reduce((sum, {count}) => sum + count, 0);
+    const startingAngle = -0.5 * Math.PI;
+
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
 
     let currentAngle = startingAngle;
 
-    let radius = Math.min(xCenter / 1.1, yCenter / 1.1);
-    
     for (let result of results) {
-        let sliceAngle = (result.count / total) * 2 * Math.PI;
-        ctx.beginPath();
-        ctx.arc(xCenter, yCenter, radius, currentAngle, currentAngle + sliceAngle);
-        
-        currentAngle += sliceAngle;
+        const sliceAngle = (result.count / resultsTotal) * 2 * Math.PI;
 
-        ctx.lineTo(xCenter, yCenter);
+        ctx.beginPath();
+        ctx.arc(canvasCenter.x, canvasCenter.y, pieRadius, currentAngle, currentAngle + sliceAngle);
+        ctx.lineTo(canvasCenter.x, canvasCenter.y);
         ctx.fillStyle = result.color;
         ctx.fill();
+
+        currentAngle += sliceAngle;
     }
-   
-    ctx.textAlign = 'center'
+
+    ctx.textAlign = 'center';
     ctx.fillStyle = 'black';
 
+    let fontSize;
     currentAngle = startingAngle;
 
     for (let result of results) {
-        let sliceAngle = (result.count / total) * 2 * Math.PI;
-
-        let label = result.name;
-
-        currentAngle += sliceAngle;
-        let textStartingRadius = radius * 0.66;
+        const sliceAngle = (result.count / resultsTotal) * 2 * Math.PI;
         
-        let offset = sliceAngle / 2;
+        // Resetting the font size mid-loop mitigates a side effect issue.
+        // If this is not done, font transformations from a very small pie slice will negatively affect the accuracy of the aspect ratio calculation for the next slice
+        fontSize = 10;
+        ctx.font = `${fontSize}px Courier New`;
+        const metrics = ctx.measureText(result.name);
+        const textAspectRatio =  metrics.width / fontSize;
 
-        let textRadius = textStartingRadius;
+        // Font size is calculated by:
+        //  1: Finding the largest circle that fits within the given pie slice
+        //  2: Calculating the height of the largest rectangle that fits within that circle whose aspect ratio matches the input text
 
-        let textPosition = new Vector2(Math.cos(currentAngle - offset),  Math.sin(currentAngle - offset)).mult(textRadius).add(center);
+        const clampedSliceAngle = Math.min(sliceAngle, Math.PI);
+        const textWindowRadius = (Math.sin(clampedSliceAngle * 0.5) / (Math.sin(clampedSliceAngle * 0.5) + 1)) * pieRadius;
+        
+        let textPosition;
+        
+        if (results.length > 1) {
+            textPosition = new Vector2(Math.cos(currentAngle + sliceAngle * 0.5), Math.sin(currentAngle + sliceAngle * 0.5))
+                .mult(pieRadius- textWindowRadius)
+                .add(canvasCenter);
 
-        let a = new Vector2(0, 0);
-        let b = new Vector2(Math.cos(currentAngle) * radius, Math.sin(currentAngle) * radius)
-        let c = new Vector2(Math.cos(currentAngle - offset) * radius, Math.sin(currentAngle - offset) * radius)
-        let d = new Vector2(Math.cos(currentAngle - sliceAngle) * radius, Math.sin(currentAngle - sliceAngle) * radius)
-
-        let sliceBoundary = new Polygon([a, b, c, d], center);
-
-        drawPoly(sliceBoundary, canvasID);
-
-        let fontSize = 10;
-        ctx.font = `${fontSize }px serif`;
-
-        let metrics = ctx.measureText(label);
-
-        let width = metrics.width;
-        let height = fontSize;
-
-        let textTopLeft = new Vector2(-width / 2,  -metrics.fontBoundingBoxAscent);
-        let textTopRight = new Vector2( width / 2,  -metrics.fontBoundingBoxAscent);
-        let textBottomRight = new Vector2( width / 2,  metrics.fontBoundingBoxDescent);
-        let textBottomLeft = new Vector2(-width / 2,  metrics.fontBoundingBoxDescent);
-
-        let textBoundary = new Polygon([textTopLeft, textTopRight, textBottomRight, textBottomLeft], textPosition);
-
-
-        while (isPolygonInPolygon(textBoundary, sliceBoundary)) {
-            fontSize += 1;
-    
-            ctx.font = `${fontSize }px serif`;
-            metrics = ctx.measureText(label);
-
-            width = metrics.width;
-            height = fontSize;
-
-            textTopLeft = new Vector2(-width / 2,  -metrics.fontBoundingBoxAscent);
-            textTopRight = new Vector2(width / 2,  -metrics.fontBoundingBoxAscent);
-            textBottomRight = new Vector2( width / 2,  metrics.fontBoundingBoxDescent);
-            textBottomLeft = new Vector2(-width / 2,  metrics.fontBoundingBoxDescent);
-
-            textBoundary = new Polygon([textTopLeft, textTopRight, textBottomRight, textBottomLeft], textPosition);
-    
-            console.log('grow');
+            fontSize = Math.sin((Math.atan(1 / textAspectRatio))) * textWindowRadius * (2 - labelSpacingPercentage * 2);
+        } else {
+            textPosition = canvasCenter;
+            fontSize = 2 * pieRadius * (1 - labelSpacingPercentage) / textAspectRatio;
         }
 
-        drawPoly(textBoundary, canvasID);
+        ctx.font = `${fontSize}px serif`;
+        ctx.fillText(result.name, textPosition.x , textPosition.y);
+        currentAngle += sliceAngle;
 
-        ctx.fillText(label, textPosition.x , textPosition.y);
+        // Visible circle around label is for demonstration purposes
+        ctx.beginPath();
+        ctx.arc(textPosition.x, textPosition.y, textWindowRadius, 0, 2 * Math.PI);
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = 'red'
+        ctx.stroke();
     }
 
-    ctx.stroke()
-
 }
+
+chartTest();
