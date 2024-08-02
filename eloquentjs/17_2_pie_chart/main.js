@@ -76,16 +76,19 @@ function drawPieChart(results, ctx) {
         //  2: Calculating the height of the largest rectangle that fits within that circle whose aspect ratio matches the input text
 
         const clampedSliceAngle = Math.min(sliceAngle, Math.PI);
-        const textWindowRadius = (Math.sin(clampedSliceAngle * 0.5) / (Math.sin(clampedSliceAngle * 0.5) + 1)) * pieRadius;
+        const textWindowSizeRadius = (Math.sin(clampedSliceAngle * 0.5) / (Math.sin(clampedSliceAngle * 0.5) + 1)) * pieRadius;
         
         let textPosition;
         
         if (results.length > 1) {
-            textPosition = new Vector2(Math.cos(currentAngle + sliceAngle * 0.5), Math.sin(currentAngle + sliceAngle * 0.5))
-                .mult(pieRadius- textWindowRadius)
+            const midSliceAngle = currentAngle + sliceAngle * 0.5;
+            const textWindowPositionRadius = pieRadius - textWindowSizeRadius; // Distance of textWindow from local origin
+
+            textPosition = new Vector2(Math.cos(midSliceAngle), Math.sin(midSliceAngle))
+                .mult(textWindowPositionRadius)
                 .add(canvasCenter);
 
-            fontSize = Math.sin((Math.atan(1 / textAspectRatio))) * textWindowRadius * (2 - labelSpacingPercentage * 2);
+            fontSize = Math.sin((Math.atan(1 / textAspectRatio))) * textWindowSizeRadius * (2 - labelSpacingPercentage * 2);
         } else {
             textPosition = canvasCenter;
             fontSize = 2 * pieRadius * (1 - labelSpacingPercentage) / textAspectRatio;
@@ -97,7 +100,7 @@ function drawPieChart(results, ctx) {
 
         // Visible circle around label is for demonstration purposes
         ctx.beginPath();
-        ctx.arc(textPosition.x, textPosition.y, textWindowRadius, 0, 2 * Math.PI);
+        ctx.arc(textPosition.x, textPosition.y, textWindowSizeRadius, 0, 2 * Math.PI);
         ctx.lineWidth = 5;
         ctx.strokeStyle = 'red'
         ctx.stroke();
