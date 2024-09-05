@@ -9,7 +9,6 @@ interface Actor {
     size: Vector2;
     type: string;
     [key: string] : any; 
-    start: Function;
     update: Function;
     collide?: Function;
 }

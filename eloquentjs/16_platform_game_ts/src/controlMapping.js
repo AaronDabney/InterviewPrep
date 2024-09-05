@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.controlMapping = controlMapping;
+/**
+ * Returns reference to command data object that is modified via event listener callback to reflect player input
+ * @param controlPairs
+ * @returns
+ */
 function controlMapping(controlPairs) {
     var down = Object.create(null);
     function track(event) {

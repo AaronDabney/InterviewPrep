@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var gameLevels_1 = require("./src/levels/gameLevels");
 var controlMapping_1 = require("./src/controlMapping");
 var runTime_1 = require("./src/runTime");
+var gameLevels_1 = require("./src/levels/gameLevels");
 var commands = (0, controlMapping_1.controlMapping)({
     left: "ArrowLeft",
     right: "ArrowRight",

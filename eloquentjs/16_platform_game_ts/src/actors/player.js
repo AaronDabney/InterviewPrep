@@ -1,39 +1,47 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = create;
-exports.start = start;
-exports.update = update;
-var vector2 = require("../vector2");
-var level = require("../level");
+var Vector_Utils = require("../vector_utils");
+var Level_Utils = require("../level");
+/**
+ * Creates player entity
+ * @param position
+ * @returns
+ */
 function create(position) {
     return {
-        position: vector2.add(position, vector2.create(0, -0.5)),
-        size: vector2.create(0.8, 1.5),
+        position: Vector_Utils.add(position, Vector_Utils.create(0, -0.5)),
+        size: Vector_Utils.create(0.8, 1.5),
         type: 'player',
         state: {
-            speed: vector2.create(0, 0),
+            speed: Vector_Utils.create(0, 0),
         },
-        start: start,
         update: update,
     };
 }
-function start() {
-}
+/**
+ * Updates the player entity
+ * @param playerEntity
+ * @param deltaTime
+ * @param gameState
+ * @param commands
+ * @returns
+ */
 function update(playerEntity, deltaTime, gameState, commands) {
     var playerXSpeed = 7;
     var gravity = 30;
     var jumpSpeed = 17;
-    var xSpeed = (commands.left ? 1 : 0) * -playerXSpeed + (commands.right ? 1 : 0) * playerXSpeed;
+    var xSpeed = ((commands.left ? -1 : 0) + (commands.right ? 1 : 0)) * playerXSpeed;
     var ySpeed = playerEntity.state.speed.y + deltaTime * gravity;
-    var xDelta = vector2.create(xSpeed * deltaTime, 0);
-    var yDelta = vector2.create(0, ySpeed * deltaTime);
-    var wontCollideWithWall = !level.touches(gameState.level, vector2.add(xDelta, playerEntity.position), playerEntity.size, 'wall');
+    var xDelta = Vector_Utils.create(xSpeed * deltaTime, 0);
+    var yDelta = Vector_Utils.create(0, ySpeed * deltaTime);
+    var wontCollideWithWall = !Level_Utils.touches(gameState.level, Vector_Utils.add(xDelta, playerEntity.position), playerEntity.size, 'wall');
     if (wontCollideWithWall) {
-        playerEntity.position = vector2.add(playerEntity.position, xDelta);
+        playerEntity.position = Vector_Utils.add(playerEntity.position, xDelta);
     }
-    var wontCollideWithGround = !level.touches(gameState.level, vector2.add(yDelta, playerEntity.position), playerEntity.size, 'wall');
+    var wontCollideWithGround = !Level_Utils.touches(gameState.level, Vector_Utils.add(yDelta, playerEntity.position), playerEntity.size, 'wall');
     if (wontCollideWithGround) {
-        playerEntity.position = vector2.add(playerEntity.position, yDelta);
+        playerEntity.position = Vector_Utils.add(playerEntity.position, yDelta);
     }
     else if (commands.jump && ySpeed > 0) {
         ySpeed = -jumpSpeed;
@@ -41,6 +49,6 @@ function update(playerEntity, deltaTime, gameState, commands) {
     else {
         ySpeed = 0;
     }
-    playerEntity.state.speed = vector2.create(xSpeed, ySpeed);
+    playerEntity.state.speed = Vector_Utils.create(xSpeed, ySpeed);
     return playerEntity;
 }

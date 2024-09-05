@@ -1,36 +1,38 @@
 import { Actor, Level, Vector2 } from "./interfaces";
-import * as Lava from './actors/lava'
-import * as Coin from './actors/coin'
-import * as Player from './actors/player'
-import * as vector2 from './vector2'
+import * as Vector_Utils from './vector_utils';
+import * as Lava from './actors/lava';
+import * as Coin from './actors/coin';
+import * as Player from './actors/player';
+
 
 /**
- * Turns a string into a level state object
- * transforms characters into either terrain OR actors
- * 
+ * Builds level object from string
  * @param plan 
  * @returns 
  */
 function planToLevel(plan: string) : Level {
     let rows = plan.trim().split("\n").map(l => l.split(''));
-    let height = rows.length;
-    let width = rows[0].length;
-    let actors : Array<Actor> = [];
+    const height = rows.length;
+    const width = rows[0].length;
+    const actors : Array<Actor> = [];
 
     rows = rows.map((row, y) => {
         return row.map((ch : string, x) => {
-            if (levelGeometryMap.has(ch)) {
-                return levelGeometryMap.get(ch);
-            } else if (levelActorMap[ch as keyof typeof levelActorMap]) {
-                
-                let actorType : string | Function = levelActorMap[ch as keyof typeof levelActorMap];
-                actors.push(actorType(vector2.create(x, y)))
+            const levelGeometryMapping = levelGeometryMap[ch as keyof typeof levelGeometryMap];
+            const levelActorMapping = levelActorMap[ch as keyof typeof levelActorMap];
 
-                return 'empty';
-            } else {
-                throw `invalid level character: ${ch.charCodeAt(0)} lol`
+            if (levelGeometryMapping) {
+                return levelGeometryMapping;
             }
 
+            if (levelActorMapping) {
+                const actorType : string | Function = levelActorMapping;
+                actors.push(actorType(Vector_Utils.create(x, y)))
+
+                return 'empty';
+            }
+
+            throw `invalid level character`
         });
     });
 
@@ -42,17 +44,11 @@ function planToLevel(plan: string) : Level {
     }
 }
 
-// const levelGeometryMap = {
-//     ".": "empty", 
-//     "#": "wall", 
-//     "+": "lava",
-// };
-
-const levelGeometryMap = new Map([
-    [".", "empty"],
-    ["#", "wall"],
-    ["+", "lava"]
-])
+const levelGeometryMap = {
+    ".": "empty",
+    "#": "wall",
+    "+": "lava"
+}
 
 const levelActorMap = {
     "@": (position : Vector2) => Player.create(position),
@@ -62,13 +58,20 @@ const levelActorMap = {
     "v": (position : Vector2) => Lava.create(position, 'dropping')
 }
 
-
+/**
+ * Checks if something of given position and size intersects a static level feature of given type
+ * If point being evaluated is outside boundary of defined level geometry it is evaluated as a 'wall'
+ * @param level 
+ * @param pos 
+ * @param size 
+ * @param type 
+ * @returns 
+ */
 function touches(level: Level, pos : Vector2, size : Vector2, type : string) {
     const xStart = Math.floor(pos.x);
     const xEnd = Math.ceil(pos.x + size.x);
     const yStart = Math.floor(pos.y);
     const yEnd = Math.ceil(pos.y + size.y);
-    
 
     for (let y = yStart; y < yEnd; y++) {
         for (let x = xStart; x < xEnd; x++) {
@@ -76,14 +79,13 @@ function touches(level: Level, pos : Vector2, size : Vector2, type : string) {
             const here = isOutside ? "wall" : level.rows[y][x];
 
             if (here === type) {
-
                 return true;
             }
         }
     }
-
     
     return false
 }
+
 
 export { planToLevel, touches }

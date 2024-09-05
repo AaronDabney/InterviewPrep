@@ -2,14 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.planToLevel = planToLevel;
 exports.touches = touches;
+var Vector_Utils = require("./vector_utils");
 var Lava = require("./actors/lava");
 var Coin = require("./actors/coin");
 var Player = require("./actors/player");
-var vector2 = require("./vector2");
 /**
- * Turns a string into a level state object
- * transforms characters into either terrain OR actors
- *
+ * Builds level object from string
  * @param plan
  * @returns
  */
@@ -20,17 +18,17 @@ function planToLevel(plan) {
     var actors = [];
     rows = rows.map(function (row, y) {
         return row.map(function (ch, x) {
-            if (levelGeometryMap.has(ch)) {
-                return levelGeometryMap.get(ch);
+            var levelGeometryMapping = levelGeometryMap[ch];
+            var levelActorMapping = levelActorMap[ch];
+            if (levelGeometryMapping) {
+                return levelGeometryMapping;
             }
-            else if (levelActorMap[ch]) {
-                var actorType = levelActorMap[ch];
-                actors.push(actorType(vector2.create(x, y)));
+            if (levelActorMapping) {
+                var actorType = levelActorMapping;
+                actors.push(actorType(Vector_Utils.create(x, y)));
                 return 'empty';
             }
-            else {
-                throw "invalid level character: ".concat(ch.charCodeAt(0), " lol");
-            }
+            throw "invalid level character";
         });
     });
     return {
@@ -40,16 +38,11 @@ function planToLevel(plan) {
         actors: actors
     };
 }
-// const levelGeometryMap = {
-//     ".": "empty", 
-//     "#": "wall", 
-//     "+": "lava",
-// };
-var levelGeometryMap = new Map([
-    [".", "empty"],
-    ["#", "wall"],
-    ["+", "lava"]
-]);
+var levelGeometryMap = {
+    ".": "empty",
+    "#": "wall",
+    "+": "lava"
+};
 var levelActorMap = {
     "@": function (position) { return Player.create(position); },
     "o": function (position) { return Coin.create(position); },
@@ -57,6 +50,15 @@ var levelActorMap = {
     "|": function (position) { return Lava.create(position, 'bouncing'); },
     "v": function (position) { return Lava.create(position, 'dropping'); }
 };
+/**
+ * Checks if something of given position and size intersects a static level feature of given type
+ * If point being evaluated is outside boundary of defined level geometry it is evaluated as a 'wall'
+ * @param level
+ * @param pos
+ * @param size
+ * @param type
+ * @returns
+ */
 function touches(level, pos, size, type) {
     var xStart = Math.floor(pos.x);
     var xEnd = Math.ceil(pos.x + size.x);

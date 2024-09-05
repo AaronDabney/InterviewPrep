@@ -3,7 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createGameState = createGameState;
 exports.updateGameState = updateGameState;
 exports.getPlayerFromGameState = getPlayerFromGameState;
-var level_1 = require("./level");
+var Level_Utils = require("./level");
+/**
+ * Convenient for creating gameState objects within a single line
+ * @param level
+ * @param status
+ * @returns
+ */
 function createGameState(level, status) {
     if (status === void 0) { status = 'playing'; }
     return {
@@ -11,9 +17,23 @@ function createGameState(level, status) {
         status: status
     };
 }
+/**
+ * Generally useful for scene actors to have an easy reference to the player entity
+ * Does not support multiple players
+ * @param gameState
+ * @returns
+ */
 function getPlayerFromGameState(gameState) {
     return gameState.level.actors.find(function (actor) { return actor.type === "player"; });
 }
+/**
+ * Higher level management of actor updates/collisions
+ * Directly handles player + static lava collisions
+ * @param gameState
+ * @param deltaTime
+ * @param commands
+ * @returns
+ */
 function updateGameState(gameState, deltaTime, commands) {
     var newState = createGameState(gameState.level, gameState.status);
     newState.level.actors = newState.level.actors.map(function (actor) { return actor.update(actor, deltaTime, gameState, commands); });
@@ -21,7 +41,7 @@ function updateGameState(gameState, deltaTime, commands) {
         return newState;
     }
     var player = getPlayerFromGameState(newState);
-    var playerTouchingLava = (0, level_1.touches)(newState.level, player.position, player.size, "lava");
+    var playerTouchingLava = Level_Utils.touches(newState.level, player.position, player.size, "lava");
     if (playerTouchingLava) {
         return createGameState(newState.level, 'lost');
     }
@@ -33,6 +53,13 @@ function updateGameState(gameState, deltaTime, commands) {
     }
     return newState;
 }
+/**
+ * Detects collisions between two actors
+ * Assumes actors are rectangular
+ * @param actor1
+ * @param actor2
+ * @returns
+ */
 function overlap(actor1, actor2) {
     return actor1.position.x + actor1.size.x > actor2.position.x &&
         actor1.position.x < actor2.position.x + actor2.size.x &&

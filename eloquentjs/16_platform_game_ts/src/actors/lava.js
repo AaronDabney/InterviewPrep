@@ -1,55 +1,75 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.create = create;
-var gameState_1 = require("../gameState");
-var vector2 = require("../vector2");
-var Level = require("../level");
-function create(position, ch, resetPosition) {
-    var speed = vector2.create(0, 0);
-    if (ch === "sliding") {
-        speed = vector2.create(2, 0);
+var Vector_Utils = require("../vector_utils");
+var Level_Utils = require("../level");
+var GameState_Utils = require("../gameState");
+/**
+ * Creates actor instance of type lava
+ * Allows for different varieties/behaviours of lava
+ * @param position
+ * @param ch
+ * @param resetPosition
+ * @returns
+ */
+function create(position, lavaSubtype, resetPosition) {
+    var speed = Vector_Utils.create(0, 0);
+    if (lavaSubtype === "sliding") {
+        speed = Vector_Utils.create(2, 0);
     }
-    else if (ch === "bouncing") {
-        speed = vector2.create(0, -2);
+    else if (lavaSubtype === "bouncing") {
+        speed = Vector_Utils.create(0, -2);
     }
-    else if (ch === "dropping") {
+    else if (lavaSubtype === "dropping") {
         resetPosition = position;
-        speed = vector2.create(0, 2);
+        speed = Vector_Utils.create(0, 2);
     }
     else {
-        throw "this aint good lava :(";
+        throw "Invalid lava subtype";
     }
     return {
         position: position,
-        size: vector2.create(1, 1),
+        size: Vector_Utils.create(1, 1),
         type: 'lava',
         state: {
             speed: speed,
             resetPosition: resetPosition,
         },
-        start: start,
         update: update,
         collide: collide,
     };
 }
-function start() {
-}
+/**
+ * Encapsulates update logic for instances of moving lava
+ * @param lavaEntity
+ * @param deltaTime
+ * @param state
+ * @returns
+ */
 function update(lavaEntity, deltaTime, state) {
-    var stepVector = vector2.mult(lavaEntity.state.speed, deltaTime);
-    var newPosition = vector2.add(lavaEntity.position, stepVector);
-    var newPositionTouchesWall = Level.touches(state.level, newPosition, lavaEntity.size, "wall");
+    var positionDelta = Vector_Utils.mult(lavaEntity.state.speed, deltaTime);
+    var newPosition = Vector_Utils.add(lavaEntity.position, positionDelta);
+    var newPositionTouchesWall = Level_Utils.touches(state.level, newPosition, lavaEntity.size, "wall");
+    // If reset positon is defined the lava will reset to that position upon collision with a "wall" tile
     var resetPosition = lavaEntity.state.resetPosition;
+    var newLavaEntity = lavaEntity;
     if (!newPositionTouchesWall) {
-        lavaEntity.position = newPosition;
+        newLavaEntity.position = newPosition;
     }
     else if (resetPosition) {
-        lavaEntity.position = resetPosition;
+        newLavaEntity.position = resetPosition;
     }
     else {
-        lavaEntity.state.speed = vector2.mult(lavaEntity.state.speed, -1);
+        newLavaEntity.state.speed = Vector_Utils.mult(lavaEntity.state.speed, -1);
     }
     return lavaEntity;
 }
+/**
+ * Any collision with instance of lava entity returns a "lost" gamestate
+ * @param actor
+ * @param gameState
+ * @returns
+ */
 function collide(actor, gameState) {
-    return (0, gameState_1.createGameState)(gameState.level, "lost");
+    return GameState_Utils.createGameState(gameState.level, "lost");
 }

@@ -37,9 +37,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.runGame = runGame;
-var level_1 = require("./level");
-var display = require("./display");
-var gameState_ops = require("./gameState");
+var Level_Utils = require("./level");
+var DisplayState_Utils = require("./displayState");
+var GameState_Utils = require("./gameState");
 function runGame(levelPlans, commands) {
     return __awaiter(this, void 0, void 0, function () {
         var maxLives, lives, levelIndex, levelData, status_1;
@@ -52,7 +52,7 @@ function runGame(levelPlans, commands) {
                     _a.label = 1;
                 case 1:
                     if (!(levelIndex < levelPlans.length)) return [3 /*break*/, 4];
-                    levelData = (0, level_1.planToLevel)(levelPlans[levelIndex]);
+                    levelData = Level_Utils.planToLevel(levelPlans[levelIndex]);
                     return [4 /*yield*/, runLevel(levelData, commands)];
                 case 2:
                     status_1 = _a.sent();
@@ -78,13 +78,13 @@ function runGame(levelPlans, commands) {
     });
 }
 function runLevel(level, commands) {
-    var gameState = gameState_ops.createGameState(level, 'playing');
-    var gameDisplay = display.createDisplayState(level);
+    var gameState = GameState_Utils.createGameState(level, 'playing');
+    var gameDisplay = DisplayState_Utils.createDisplayState(level);
     var levelEndDelay = 1;
     return new Promise(function (resolve) {
         runAnimation(function (deltaTime) {
-            gameState = gameState_ops.updateGameState(gameState, deltaTime, commands); //actors are updating one per anim frame
-            gameDisplay = display.displaySync(gameState, gameDisplay);
+            gameState = GameState_Utils.updateGameState(gameState, deltaTime, commands);
+            gameDisplay = DisplayState_Utils.displaySync(gameState, gameDisplay);
             if (gameState.status == "playing") {
                 return true;
             }
@@ -93,7 +93,7 @@ function runLevel(level, commands) {
                 return true;
             }
             else {
-                display.clearGameDOM(gameDisplay);
+                DisplayState_Utils.clearGameDOM(gameDisplay);
                 resolve(gameState.status);
                 return false;
             }

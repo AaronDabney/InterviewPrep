@@ -1,9 +1,9 @@
 
-import { GAME_LEVELS } from "./src/levels/gameLevels"
-import { planToLevel } from "./src/level"
+import { CommandData } from "./src/interfaces";
 import { controlMapping } from "./src/controlMapping"
 import { runGame } from "./src/runTime";
-import { CommandData } from "./src/interfaces";
+import { GAME_LEVELS } from "./src/levels/gameLevels"
+
 
 const commands : CommandData = controlMapping({
     left: "ArrowLeft",

@@ -1,7 +1,7 @@
 import { Level , GameState, DisplayState, CommandData} from "./interfaces";
-import { planToLevel } from "./level";
-import * as display from "./display";
-import * as gameState_ops from  "./gameState";
+import * as Level_Utils from "./level";
+import * as DisplayState_Utils from "./displayState";
+import * as GameState_Utils from  "./gameState";
 
 
 async function runGame(levelPlans : Array<string>, commands: CommandData) {
@@ -10,7 +10,7 @@ async function runGame(levelPlans : Array<string>, commands: CommandData) {
 
     for (let levelIndex = 0; levelIndex < levelPlans.length;) {
 
-        let levelData = planToLevel(levelPlans[levelIndex])
+        const levelData = Level_Utils.planToLevel(levelPlans[levelIndex])
 
         const status = await runLevel(levelData, commands);
 
@@ -35,19 +35,16 @@ async function runGame(levelPlans : Array<string>, commands: CommandData) {
 }
 
 function runLevel(level : Level, commands: CommandData)  {
-    
-    let gameState : GameState = gameState_ops.createGameState(level, 'playing');
-    let gameDisplay : DisplayState = display.createDisplayState(level); 
+    let gameState : GameState = GameState_Utils.createGameState(level, 'playing');
+    let gameDisplay : DisplayState = DisplayState_Utils.createDisplayState(level); 
 
     let levelEndDelay = 1;
 
     return new Promise(resolve => {
 
         runAnimation((deltaTime : number) => {
-            gameState = gameState_ops.updateGameState(gameState, deltaTime, commands); //actors are updating one per anim frame
-           
-            gameDisplay = display.displaySync(gameState, gameDisplay);
-
+            gameState = GameState_Utils.updateGameState(gameState, deltaTime, commands);
+            gameDisplay = DisplayState_Utils.displaySync(gameState, gameDisplay);
 
             if (gameState.status == "playing") {
                 return true;
@@ -55,15 +52,12 @@ function runLevel(level : Level, commands: CommandData)  {
                 levelEndDelay -= deltaTime;
                 return true;
             } else {
-                display.clearGameDOM(gameDisplay);
+                DisplayState_Utils.clearGameDOM(gameDisplay);
                 resolve(gameState.status);
                 return false;
             }
-
         });
-
     });
-
 }
 
 function runAnimation(frameFunc : Function) {
@@ -83,5 +77,6 @@ function runAnimation(frameFunc : Function) {
 
     requestAnimationFrame(frame);
 }
+
 
 export { runGame }
