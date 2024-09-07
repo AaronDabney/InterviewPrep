@@ -29,8 +29,7 @@ function bouncingBall(ctx) {
     const xCenter = canvasWidth / 2;
     const yCenter = canvasHeight / 2;
 
-
-    const timeInSeconds = Date.now() / 1000;
+    const timeInSeconds = Date.now() / 1000; // (since January 1, 1970)
 
     const xPosition = xCenter + triangleWave(timeInSeconds, period) * xCenter * (1 - ballRadius / xCenter);
     const yPosition = yCenter + triangleWave(timeInSeconds + verticalPhaseShift, period) * yCenter * (1 - ballRadius / yCenter);
