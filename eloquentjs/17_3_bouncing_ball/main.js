@@ -18,20 +18,22 @@ function bouncingBall(ctx) {
     const canvasWidth = ctx.canvas.clientWidth;
     const canvasHeight = ctx.canvas.clientHeight;
 
+    const period = 5;
+
     // Range: [-1 , 1]
     const triangleWave = (x, period) => 2 * Math.abs( 2 * (x / period - Math.floor(x / period + 0.5))) - 1; 
     
-    const verticalPhaseMod = Math.PI / 2;
+    const verticalPhaseShift = Math.PI / 2;
     const ballRadius = 50;
     
     const xCenter = canvasWidth / 2;
     const yCenter = canvasHeight / 2;
 
-    let period = 5;
-    let timeInSeconds = Date.now() / 1000;
 
-    let xPosition = xCenter + triangleWave(timeInSeconds, period) * xCenter * (1 - ballRadius / xCenter);
-    let yPosition = yCenter + triangleWave(timeInSeconds + verticalPhaseMod, period) * yCenter * (1 - ballRadius / yCenter);
+    const timeInSeconds = Date.now() / 1000;
+
+    const xPosition = xCenter + triangleWave(timeInSeconds, period) * xCenter * (1 - ballRadius / xCenter);
+    const yPosition = yCenter + triangleWave(timeInSeconds + verticalPhaseShift, period) * yCenter * (1 - ballRadius / yCenter);
 
     // Clear canvas
     ctx.fillStyle = 'black';
