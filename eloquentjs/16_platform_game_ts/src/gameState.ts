@@ -8,7 +8,7 @@ import * as Level_Utils from "./level";
  * @param status 
  * @returns 
  */
-function createGameState(level: Level, status: string = 'playing') : GameState {
+function createGameState(level: Level, status: string = 'playing'): GameState {
     return {
         level: level,
         status: status
@@ -21,7 +21,7 @@ function createGameState(level: Level, status: string = 'playing') : GameState {
  * @param gameState 
  * @returns 
  */
-function getPlayerFromGameState(gameState: GameState) : Actor{
+function getPlayerFromGameState(gameState: GameState): Actor{
     return gameState.level.actors.find(actor => actor.type === "player");
 }
 
@@ -33,7 +33,7 @@ function getPlayerFromGameState(gameState: GameState) : Actor{
  * @param commands 
  * @returns 
  */
-function updateGameState(gameState : GameState, deltaTime : number, commands : CommandData) : GameState {
+function updateGameState(gameState: GameState, deltaTime: number, commands: CommandData): GameState {
     let newState = createGameState(gameState.level, gameState.status);
 
     newState.level.actors = newState.level.actors.map(actor => actor.update(actor, deltaTime, gameState, commands));
@@ -66,7 +66,7 @@ function updateGameState(gameState : GameState, deltaTime : number, commands : C
  * @param actor2 
  * @returns 
  */
-function overlap(actor1 : Actor, actor2 : Actor) {
+function overlap(actor1: Actor, actor2: Actor) {
     return actor1.position.x + actor1.size.x > actor2.position.x &&
            actor1.position.x < actor2.position.x + actor2.size.x &&
            actor1.position.y + actor1.size.y > actor2.position.y &&

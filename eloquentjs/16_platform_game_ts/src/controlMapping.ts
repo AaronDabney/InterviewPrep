@@ -6,7 +6,7 @@ import { CommandData } from "./interfaces";
  * @param controlPairs 
  * @returns 
  */
-function controlMapping(controlPairs : Object) : CommandData {
+function controlMapping(controlPairs: Object): CommandData {
     const down = Object.create(null);
 
     function track(event: KeyboardEvent) {

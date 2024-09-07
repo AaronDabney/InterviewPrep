@@ -8,7 +8,7 @@ import * as Level_Utils from "../level";
  * @param position 
  * @returns 
  */
-function create(position : Vector2) : Actor {
+function create(position: Vector2): Actor {
     return {
         position: Vector_Utils.add(position, Vector_Utils.create(0, -0.5)),
         size: Vector_Utils.create(0.8, 1.5),
@@ -28,7 +28,7 @@ function create(position : Vector2) : Actor {
  * @param commands 
  * @returns 
  */
-function update(playerEntity : Actor, deltaTime : number, gameState: GameState, commands : CommandData) {
+function update(playerEntity: Actor, deltaTime: number, gameState: GameState, commands: CommandData) {
     const playerXSpeed = 7;
     const gravity = 30;
     const jumpSpeed = 17;

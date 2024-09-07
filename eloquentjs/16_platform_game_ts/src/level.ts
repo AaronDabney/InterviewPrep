@@ -10,14 +10,14 @@ import * as Player from './actors/player';
  * @param plan 
  * @returns 
  */
-function planToLevel(plan: string) : Level {
+function planToLevel(plan: string): Level {
     let rows = plan.trim().split("\n").map(l => l.split(''));
     const height = rows.length;
     const width = rows[0].length;
-    const actors : Array<Actor> = [];
+    const actors: Array<Actor> = [];
 
     rows = rows.map((row, y) => {
-        return row.map((ch : string, x) => {
+        return row.map((ch: string, x) => {
             const levelGeometryMapping = levelGeometryMap[ch as keyof typeof levelGeometryMap];
             const levelActorMapping = levelActorMap[ch as keyof typeof levelActorMap];
 
@@ -26,7 +26,7 @@ function planToLevel(plan: string) : Level {
             }
 
             if (levelActorMapping) {
-                const actorType : string | Function = levelActorMapping;
+                const actorType: string | Function = levelActorMapping;
                 actors.push(actorType(Vector_Utils.create(x, y)))
 
                 return 'empty';
@@ -51,11 +51,11 @@ const levelGeometryMap = {
 }
 
 const levelActorMap = {
-    "@": (position : Vector2) => Player.create(position),
-    "o": (position : Vector2) => Coin.create(position),
-    "=": (position : Vector2) => Lava.create(position, 'sliding'),
-    "|": (position : Vector2) => Lava.create(position, 'bouncing'),
-    "v": (position : Vector2) => Lava.create(position, 'dropping')
+    "@": (position: Vector2) => Player.create(position),
+    "o": (position: Vector2) => Coin.create(position),
+    "=": (position: Vector2) => Lava.create(position, 'sliding'),
+    "|": (position: Vector2) => Lava.create(position, 'bouncing'),
+    "v": (position: Vector2) => Lava.create(position, 'dropping')
 }
 
 /**
@@ -67,7 +67,7 @@ const levelActorMap = {
  * @param type 
  * @returns 
  */
-function touches(level: Level, pos : Vector2, size : Vector2, type : string) {
+function touches(level: Level, pos: Vector2, size: Vector2, type: string) {
     const xStart = Math.floor(pos.x);
     const xEnd = Math.ceil(pos.x + size.x);
     const yStart = Math.floor(pos.y);

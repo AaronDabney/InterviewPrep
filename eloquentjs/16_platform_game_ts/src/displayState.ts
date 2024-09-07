@@ -9,7 +9,7 @@ import * as  Vector_Utils from "./vector_utils";
  * @param displayState 
  * @returns 
  */
-function displaySync(gameState : GameState, displayState : DisplayState) : DisplayState {
+function displaySync(gameState: GameState, displayState: DisplayState): DisplayState {
     if (displayState.actorLayer) {
         displayState.actorLayer.remove();
     }
@@ -36,7 +36,7 @@ function displaySync(gameState : GameState, displayState : DisplayState) : Displ
  * @param gameState 
  * @param displayState 
  */
-function scrollPlayerIntoView(gameState : GameState, displayState: DisplayState) {
+function scrollPlayerIntoView(gameState: GameState, displayState: DisplayState) {
     const dom = displayState.dom;
 
     const width = dom.clientWidth;
@@ -53,7 +53,7 @@ function scrollPlayerIntoView(gameState : GameState, displayState: DisplayState)
 
     const playerDisplayOffset = Vector_Utils.mult(player.size, 0.5);
 
-    const center : Vector2 = Vector_Utils.mult(Vector_Utils.add(player.position, playerDisplayOffset), displayState.scale);
+    const center: Vector2 = Vector_Utils.mult(Vector_Utils.add(player.position, playerDisplayOffset), displayState.scale);
 
     if (center.x < left + margin) {
         dom.scrollLeft = center.x - margin;
@@ -73,7 +73,7 @@ function scrollPlayerIntoView(gameState : GameState, displayState: DisplayState)
  * Utilized upon level completion to reset displayState.
  * @param displayState 
  */
-function clearGameDOM(displayState : DisplayState) {
+function clearGameDOM(displayState: DisplayState) {
     displayState.dom.remove();
 }
 
@@ -82,7 +82,7 @@ function clearGameDOM(displayState : DisplayState) {
  * @param level 
  * @returns 
  */
-function createDisplayState(level : Level) : DisplayState {
+function createDisplayState(level: Level): DisplayState {
     const targetElement = document.body;
    
     while(targetElement.firstChild) {
@@ -110,7 +110,7 @@ function createDisplayState(level : Level) : DisplayState {
  * @param children 
  * @returns 
  */
-function buildNode(tagName : string, attributes : Array<Array<string>>, ...children : Array<Node>) {
+function buildNode(tagName: string, attributes: Array<Array<string>>, ...children: Array<Node>) {
     const dom = document.createElement(tagName);
 
     for (let [key, value] of attributes) {
@@ -130,7 +130,7 @@ function buildNode(tagName : string, attributes : Array<Array<string>>, ...child
  * @param scale 
  * @returns 
  */
-function drawGrid(level : Level, scale : number) {
+function drawGrid(level: Level, scale: number) {
     const backdropAttributes = [['class', "background"], ['style', `width: ${level.width * scale}px`]];
     const rowAttributes = [[`style`,`height: ${scale}px`]];
 
@@ -141,12 +141,12 @@ function drawGrid(level : Level, scale : number) {
 }
 
 /**
- * Populates and returns a div with representations of a levels actors
+ * Populates and returns a div that displays the actors within input array
  * @param actors 
  * @param scale 
  * @returns 
  */
-function drawActors(actors : Array<Actor>, scale : number) {
+function drawActors(actors: Array<Actor>, scale: number) {
     return buildNode("div", [['class','actor-layer']], ...actors.map(actor => {
         const rect = buildNode("div", [[`class`, `actor ${actor.type}`]]);
 

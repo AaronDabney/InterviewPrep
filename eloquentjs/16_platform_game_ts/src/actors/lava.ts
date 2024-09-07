@@ -12,7 +12,7 @@ import * as GameState_Utils from '../gameState'
  * @param resetPosition 
  * @returns 
  */
-function create(position : Vector2, lavaSubtype : string, resetPosition? : Vector2) {
+function create(position: Vector2, lavaSubtype: string, resetPosition?: Vector2) {
     let speed = Vector_Utils.create(0, 0);
 
     if (lavaSubtype === "sliding") {
@@ -46,15 +46,15 @@ function create(position : Vector2, lavaSubtype : string, resetPosition? : Vecto
  * @param state 
  * @returns 
  */
-function update(lavaEntity : Actor, deltaTime : number, state : GameState) {
+function update(lavaEntity: Actor, deltaTime: number, state: GameState) {
     const positionDelta = Vector_Utils.mult(lavaEntity.state.speed, deltaTime);
 
     const newPosition = Vector_Utils.add(lavaEntity.position, positionDelta);
 
     const newPositionTouchesWall = Level_Utils.touches(state.level, newPosition, lavaEntity.size, "wall")
 
-    // If reset positon is defined the lava will reset to that position upon collision with a "wall" tile
-    const resetPosition : Vector2 | undefined = lavaEntity.state.resetPosition;
+    // If a reset positon is defined the lava will reset to that position upon collision with a "wall" tile
+    const resetPosition: Vector2 | undefined = lavaEntity.state.resetPosition;
 
     const newLavaEntity = lavaEntity;
 
@@ -75,7 +75,7 @@ function update(lavaEntity : Actor, deltaTime : number, state : GameState) {
  * @param gameState 
  * @returns 
  */
-function collide(actor: Actor, gameState : GameState) {
+function collide(actor: Actor, gameState: GameState) {
     return GameState_Utils.createGameState(gameState.level, "lost");
 }
 

@@ -8,7 +8,7 @@ interface Actor {
     speed?: Vector2;
     size: Vector2;
     type: string;
-    [key: string] : any; 
+    [key: string]: any; 
     update: Function;
     collide?: Function;
 }

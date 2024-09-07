@@ -8,7 +8,7 @@ import * as GameState_Utils from '../gameState'
  * @param position 
  * @returns 
  */
-function create(position : Vector2) : Actor {
+function create(position: Vector2): Actor {
     const displayOffset = Vector_Utils.create(0.2, 0.1);
     const startingPosition = Vector_Utils.add(position, displayOffset);
 
@@ -34,7 +34,7 @@ function create(position : Vector2) : Actor {
  * @param gameState 
  * @returns 
  */
-function collide(coinEntity : Actor, gameState : GameState) : GameState {
+function collide(coinEntity: Actor, gameState: GameState): GameState {
     const actorsExcludingTarget = gameState.level.actors.filter(actor => actor !== coinEntity);
     const coinsRemaining = actorsExcludingTarget.some(actor => actor.type === 'coin');
     const status = coinsRemaining ? gameState.status : 'won';
@@ -53,7 +53,7 @@ function collide(coinEntity : Actor, gameState : GameState) : GameState {
  * @param state 
  * @returns 
  */
-function update(coinEntity : Actor, deltaTime : number, state: GameState) {
+function update(coinEntity: Actor, deltaTime: number, state: GameState) {
     const wobbleSpeed = 8, wobbleDist = 0.07;
     const wobble = coinEntity.state.wobble + deltaTime * wobbleSpeed;
     const wobblePos = Math.sin(wobble) * wobbleDist;
