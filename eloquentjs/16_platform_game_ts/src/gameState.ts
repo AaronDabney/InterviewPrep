@@ -1,6 +1,13 @@
-import { GameState, Level, Actor, CommandData } from "./interfaces";
+import { Actor } from "./actor";
+import { Level } from "./level";
+import { CommandData } from "./controlMapping";
+
 import * as Level_Utils from "./level";
 
+export interface GameState {
+    level: Level;
+    status: string;
+}
 
 /**
  * Convenient for creating gameState objects within a single line

@@ -1,4 +1,8 @@
-import { Actor, Level, Vector2, GameState, CommandData } from "../interfaces";
+import { Vector2 } from "../vector_utils";
+import { GameState } from "../gameState";
+import { Actor } from "../actor";
+import { CommandData } from "../controlMapping";
+
 import * as Vector_Utils from '../vector_utils'
 import * as Level_Utils from "../level";
 

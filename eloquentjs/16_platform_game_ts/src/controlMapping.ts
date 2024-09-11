@@ -1,5 +1,8 @@
-import { CommandData } from "./interfaces";
-
+export interface CommandData {
+    left?: boolean,
+    right?: boolean,
+    jump?: boolean,
+}
 
 /**
  * Returns reference to command data object that is modified via event listener callback to reflect player input
@@ -23,6 +26,5 @@ function controlMapping(controlPairs: Object): CommandData {
 
     return down;
 }
-
 
 export { controlMapping }

@@ -1,4 +1,8 @@
-import { Level , GameState, DisplayState, CommandData} from "./interfaces";
+import { CommandData } from "./controlMapping";
+import { GameState } from "./gameState";
+import { Level } from "./level";
+import { DisplayState } from "./displayState";
+
 import * as Level_Utils from "./level";
 import * as DisplayState_Utils from "./displayState";
 import * as GameState_Utils from  "./gameState";
@@ -7,6 +11,8 @@ import * as GameState_Utils from  "./gameState";
 async function runGame(levelPlans: Array<string>, commands: CommandData) {
     const maxLives = 3;
     let lives = maxLives;
+
+    console.log("Go!")
 
     for (let levelIndex = 0; levelIndex < levelPlans.length;) {
 

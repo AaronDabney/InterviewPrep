@@ -1,4 +1,5 @@
-import { CommandData } from "./interfaces";
+import { CommandData } from "./controlMapping";
+
 import { controlMapping } from "./controlMapping"
 import { runGame } from "./runTime";
 import { GAME_LEVELS } from "./levels/gameLevels"

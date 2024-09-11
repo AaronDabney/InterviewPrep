@@ -1,9 +1,17 @@
-import { Actor, Level, Vector2 } from "./interfaces";
+import { Actor } from "./actor";
+import { Vector2 } from "./vector_utils";
+
 import * as Vector_Utils from './vector_utils';
 import * as Lava from './actors/lava';
 import * as Coin from './actors/coin';
 import * as Player from './actors/player';
 
+export interface Level {
+    rows: Array<Array<string>>;
+    height: number;
+    width: number;
+    actors: Array<Actor>;
+}
 
 /**
  * Builds level object from string

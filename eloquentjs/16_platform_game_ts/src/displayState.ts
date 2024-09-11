@@ -1,7 +1,16 @@
-import { Actor, DisplayState, GameState, Level, Vector2 } from "./interfaces";
+import { Actor } from "./actor";
+import { GameState } from "./gameState";
+import { Vector2 } from "./vector_utils";
+import { Level } from "./level";
+
 import * as GameState_Utils from './gameState'
 import * as  Vector_Utils from "./vector_utils";
 
+export interface DisplayState {
+    scale: number;
+    dom: HTMLElement;
+    actorLayer: HTMLElement;
+}
 
 /**
  * Updates display state to match gamestate
