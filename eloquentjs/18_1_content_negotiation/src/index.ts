@@ -1,5 +1,5 @@
-async function urlHeaderAcceptTest(url : string, mediaTypeList : Array<string>) {
-    const baselineStatus : Number = (await fetch(url)).status;
+async function urlHeaderAcceptTest(url: string, mediaTypeList: Array<string>) {
+    const baselineStatus: Number = (await fetch(url)).status;
 
     if (baselineStatus !== 200) {
         throw `Baseline test failure. Server returned status: ${baselineStatus}`;
