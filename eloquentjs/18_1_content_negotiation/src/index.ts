@@ -1,4 +1,4 @@
-async function urlHeaderAcceptTest(url: string, mediaTypeList: Array<string>) {
+async function mediaTypeTest(url: string, mediaTypeList: Array<string>) {
     const baselineStatus: Number = (await fetch(url)).status;
 
     if (baselineStatus !== 200) {
@@ -26,7 +26,7 @@ const mediaRequestTypes = [
 const targetURL = 'https://eloquentjavascript.net/author';
 
 
-urlHeaderAcceptTest(targetURL, mediaRequestTypes);
+mediaTypeTest(targetURL, mediaRequestTypes);
 
 // --> 
 // Header request for mediatype text/plain returned status code 200
