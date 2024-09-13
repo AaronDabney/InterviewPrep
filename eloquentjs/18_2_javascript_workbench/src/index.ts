@@ -1,5 +1,5 @@
-const codeInput : HTMLTextAreaElement = document.getElementById('codeInput') as HTMLTextAreaElement;
-const codeOutput : HTMLPreElement = document.getElementById("codeOutput") as HTMLPreElement;
+const codeInput: HTMLTextAreaElement = document.getElementById('codeInput') as HTMLTextAreaElement;
+const codeOutput: HTMLPreElement = document.getElementById("codeOutput") as HTMLPreElement;
 
 /**
  * Accepts textArea and pre element
