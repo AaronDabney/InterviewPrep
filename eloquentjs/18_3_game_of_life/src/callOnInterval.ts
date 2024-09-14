@@ -1,9 +1,8 @@
 /**
- * Calls a program periodically. Guaranteed call sequence compared to setInterval.
- * Optional halt callback
+ * Calls a function periodically with optional halt callback
  * @param intervalMilliseconds 
  * @param callback 
- * @param stopCondition 
+ * @param halt 
  */
 function callOnInterval(intervalMilliseconds: number, callback: Function, halt: Function = () => false) {
     let lastCallTime: number | null = null;
@@ -27,5 +26,6 @@ function callOnInterval(intervalMilliseconds: number, callback: Function, halt: 
     
     requestAnimationFrame(loop);
 }
+
 
 export { callOnInterval }

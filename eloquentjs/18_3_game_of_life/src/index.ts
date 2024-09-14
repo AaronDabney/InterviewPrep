@@ -1,8 +1,11 @@
-import * as Grid_Utils from './grid_utils'
-import { Grid } from './grid_utils';
-import * as Runtime_Utils from './runtime'
+import { runGameOfLife} from './runtime'
+import { RunTimeParameters } from './runtime'
 
-let gridContainer: HTMLDivElement = document.getElementById("gridContainer") as HTMLDivElement;
-let populatedGrid: HTMLDivElement = Grid_Utils.generateGrid(gridContainer, 50);
 
-Runtime_Utils.runGameOfLife(populatedGrid, 50);
+const runTimeParameters = {
+    gridSize: 50,
+    stepPeriodMilliseconds: 50,
+    containerElement: <HTMLDivElement>document.getElementById("gridContainer"),
+}
+
+runGameOfLife(runTimeParameters);

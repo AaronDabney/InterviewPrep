@@ -3,36 +3,72 @@ import { Grid, Cell } from './grid_utils';
 import { callOnInterval } from './callOnInterval'
 import { arrayFromElementChildren, forEachCellInGrid } from './helper_utils';
 
-function runGameOfLife(grid: Grid, period: number) {
-    console.log("runGameOfLife");
-    let simulationState = {
-        playing: false
+export interface SimulationState {
+    grid: Grid;
+    intervalID?: any;
+}
+
+export interface RunTimeParameters {
+    gridSize: number;
+    stepPeriodMilliseconds: number;
+    containerElement: HTMLDivElement;
+}
+
+const simulationRunning = (sim : SimulationState) => !!sim.intervalID;
+
+function runGameOfLife(runTimeParameters: RunTimeParameters) {
+    const simulationState: SimulationState = {
+        grid: Grid_Utils.buildGridDom(runTimeParameters.containerElement, runTimeParameters.gridSize),
+        intervalID: undefined,
     }
 
     function pausePlaySimulation(grid: Grid) {
-        console.log("pausePlaySimulation");
-        simulationState.playing = !simulationState.playing;
-    
-        if (simulationState) {
-            console.log("pausePlaySimulation 2");
-            callOnInterval(period, () => Grid_Utils.nextGridFrame(grid), () => !simulationState.playing);
+        //simulationState.playing = !simulationState.playing;
+
+
+        if (!simulationState.intervalID) {
+            simulationState.intervalID = setInterval( () => Grid_Utils.nextGridFrame(grid), runTimeParameters.stepPeriodMilliseconds);
+            return;
         }
+
+        if (simulationState.intervalID) {
+            clearInterval(simulationState.intervalID);
+            simulationState.intervalID = undefined;
+            return;
+        }
+
+        // if (!simulationState.intervalID && simulationState.playing) {
+        //     simulationState.intervalID = setInterval( () => Grid_Utils.nextGridFrame(grid), runTimeParameters.stepPeriodMilliseconds);
+        //     return;
+        // }
+
+        // if (simulationState.intervalID && !simulationState.playing) {
+        //     clearInterval(simulationState.intervalID);
+        //     return;
+        // }
+    
+
+
+
+
+
+        // if (simulationState) {
+        //    // callOnInterval(runTimeParameters.stepPeriodMilliseconds, () => Grid_Utils.nextGridFrame(grid), () => !simulationState.playing);
+        // }
     }
     
     function clearSimulationGrid(grid: Grid) {
-        console.log("clearSimulationGrid");
-        if (simulationState.playing) {
+        if (simulationRunning(simulationState)) {
             pausePlaySimulation(grid);
         }
     
         forEachCellInGrid(grid, (cell: Cell) => {
-            (cell as HTMLInputElement).checked = false;
+            cell.checked = false;
         });
     }
     
     function stepSimulation(grid: Grid)  {
-        console.log("stepSimulation");
-        if (simulationState.playing) {
+        if (simulationRunning(simulationState)) {
             pausePlaySimulation(grid);
         }
 
@@ -40,18 +76,18 @@ function runGameOfLife(grid: Grid, period: number) {
     }
     
     function setGridRandom(grid: Grid)  {
-        console.log("setGridRandom");
-        if (simulationState.playing) {
+        if (simulationRunning(simulationState)) {
             pausePlaySimulation(grid);
         }
 
         Grid_Utils.randomizeGrid(grid)
     }
     
-    document.getElementById("random")!.addEventListener("click", () => setGridRandom(grid));
-    document.getElementById("step")!.addEventListener("click", () => stepSimulation(grid));
-    document.getElementById("pausePlay")!.addEventListener("click", () => pausePlaySimulation(grid));
-    document.getElementById("clear")!.addEventListener("click", () => clearSimulationGrid(grid));
+    document.getElementById("random")!.addEventListener("click", () => setGridRandom(simulationState.grid));
+    document.getElementById("step")!.addEventListener("click", () => stepSimulation(simulationState.grid));
+    document.getElementById("pausePlay")!.addEventListener("click", () => pausePlaySimulation(simulationState.grid));
+    document.getElementById("clear")!.addEventListener("click", () => clearSimulationGrid(simulationState.grid));
 }
+
 
 export { runGameOfLife }

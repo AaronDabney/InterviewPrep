@@ -16,7 +16,9 @@ function forEachCellInGrid(grid: Grid, callback: Function) {
 }
 
 const isTwoOrThree = (j: number) => (j === 3 || j === 2);
+            
 const setCellAlive = (cell: Cell) => cell.toggleAttribute("live", true);
 const setCellDead = (cell: Cell) => cell.toggleAttribute("live", false);
+
 
 export { arrayFromElementChildren, positiveModulo, forEachCellInGrid, isTwoOrThree, setCellAlive, setCellDead };
