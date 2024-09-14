@@ -1,11 +1,11 @@
-import { runGameOfLife} from './runtime'
-import { RunTimeParameters } from './runtime'
+import { runGameOfLife} from './runtime';
+import { RunTimeParameters } from './runtime';
 
 
-const runTimeParameters = {
+const runParams: RunTimeParameters = {
     gridSize: 50,
     stepPeriodMilliseconds: 50,
     containerElement: <HTMLDivElement>document.getElementById("gridContainer"),
 }
 
-runGameOfLife(runTimeParameters);
+runGameOfLife(runParams);

@@ -4,13 +4,15 @@ import { arrayFromElementChildren,
          isTwoOrThree,
          setCellAlive,
          setCellDead,
-        } from "./helper_utils"
+        } from "./helper_utils";
+
+import { SimulationState } from "./sim_utils";
+
 
 export type Grid = HTMLDivElement;
 export type Cell = HTMLInputElement;
 
-
-function buildGridDom(gridContainer : HTMLDivElement, gridSize: number): Grid {
+function buildGrid(containerElement: HTMLElement, gridSize: number): Grid {
     for (let y = 0; y < gridSize; y++) {
         const rowElement = document.createElement('div');
         rowElement.setAttribute("class", "gridRow");
@@ -25,15 +27,15 @@ function buildGridDom(gridContainer : HTMLDivElement, gridSize: number): Grid {
            rowElement.appendChild(cell);
         }
 
-        gridContainer.appendChild(rowElement);
+        containerElement.appendChild(rowElement);
     }
 
-    return <Grid>gridContainer;
+    return <Grid>containerElement;
 }
 
-function randomizeGrid(grid: Grid) {
-    forEachCellInGrid(grid, (cell: Cell) => {
-        (<Cell>cell).checked = Math.random() > 0.5;
+function randomizeGrid(sim: SimulationState) {
+    forEachCellInGrid(sim.grid, (cell: Cell) => {
+        cell.checked = Math.random() > 0.5;
     });
 }
 
@@ -49,7 +51,7 @@ function tallyLivingCells(cells: Array<Cell>): number {
     return output;
 }
 
-function getCellNeighbours(grid: Grid, centerCell: Cell) {
+function getCellNeighbours(sim: SimulationState, centerCell: Cell): Array<Cell> {
     let addressOffsets = [
             {x: 1 ,y: 0 },
             {x: 1 ,y:-1 },
@@ -64,14 +66,13 @@ function getCellNeighbours(grid: Grid, centerCell: Cell) {
     
     const centerCellPositionX: number = parseInt(centerCell.getAttribute('x'));
     const centerCellPositionY: number = parseInt(centerCell.getAttribute('y'));
-
-    const rows = arrayFromElementChildren(grid);
-    const gridSize = rows.length
+        
+    const rows = arrayFromElementChildren(sim.grid);
 
     for (let offset of addressOffsets) {
         // Positive modulo allows wrapping to opposite edge of grid
-        const neighbourPositionY = positiveModulo(offset.y + centerCellPositionY, gridSize);
-        const neighbourPositionX = positiveModulo(offset.x + centerCellPositionX, gridSize);
+        const neighbourPositionY = positiveModulo(offset.y + centerCellPositionY, sim.runTimeSettings.gridSize);
+        const neighbourPositionX = positiveModulo(offset.x + centerCellPositionX, sim.runTimeSettings.gridSize);
 
         const row = rows[neighbourPositionY];
         const neighbourCell = arrayFromElementChildren(row)[neighbourPositionX];
@@ -82,11 +83,10 @@ function getCellNeighbours(grid: Grid, centerCell: Cell) {
     return cellNeighbours
 }
 
-function nextGridFrame(grid : HTMLDivElement) {
-    forEachCellInGrid(grid, (cell: Cell) => {
-        const neighbours = getCellNeighbours(grid, cell);
+function nextGridFrame(sim: SimulationState) {
+    forEachCellInGrid(sim.grid, (cell: Cell) => {
+        const neighbours = getCellNeighbours(sim, cell);
         const livingNeighboursCount = tallyLivingCells(neighbours);
-
         const cellAlive = cell.checked;
 
         // Core simulation rules
@@ -99,10 +99,10 @@ function nextGridFrame(grid : HTMLDivElement) {
         }
     });
 
-    forEachCellInGrid(grid, (cell: Cell) => {
-        (cell as Cell).checked = (cell as Cell).getAttribute("live") !== null;
+    forEachCellInGrid(sim.grid, (cell: Cell) => {
+        cell.checked = cell.getAttribute("live") !== null;
     });
 }
 
 
-export { buildGridDom, randomizeGrid, nextGridFrame }
+export { buildGrid, randomizeGrid, nextGridFrame }

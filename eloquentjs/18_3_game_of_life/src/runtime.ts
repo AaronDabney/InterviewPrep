@@ -1,12 +1,7 @@
-import * as Grid_Utils from './grid_utils'
+import * as Grid_Utils from './grid_utils';
 import { Grid, Cell } from './grid_utils';
-import { callOnInterval } from './callOnInterval'
+import {  SimulationState, buildSimulationStateFromRunTimeParameters } from './sim_utils';
 import { arrayFromElementChildren, forEachCellInGrid } from './helper_utils';
-
-export interface SimulationState {
-    grid: Grid;
-    intervalID?: any;
-}
 
 export interface RunTimeParameters {
     gridSize: number;
@@ -14,79 +9,56 @@ export interface RunTimeParameters {
     containerElement: HTMLDivElement;
 }
 
-const simulationRunning = (sim : SimulationState) => !!sim.intervalID;
+const simulationRunning = (sim: SimulationState) => !!sim.intervalID;
 
 function runGameOfLife(runTimeParameters: RunTimeParameters) {
-    const simulationState: SimulationState = {
-        grid: Grid_Utils.buildGridDom(runTimeParameters.containerElement, runTimeParameters.gridSize),
-        intervalID: undefined,
-    }
+    let sim = buildSimulationStateFromRunTimeParameters(runTimeParameters);
 
-    function pausePlaySimulation(grid: Grid) {
-        //simulationState.playing = !simulationState.playing;
-
-
-        if (!simulationState.intervalID) {
-            simulationState.intervalID = setInterval( () => Grid_Utils.nextGridFrame(grid), runTimeParameters.stepPeriodMilliseconds);
+    function toggleSimulation(sim: SimulationState) {
+        // Play
+        if (!sim.intervalID) {
+            sim.intervalID = setInterval(() => Grid_Utils.nextGridFrame(sim), runTimeParameters.stepPeriodMilliseconds);
             return;
         }
 
-        if (simulationState.intervalID) {
-            clearInterval(simulationState.intervalID);
-            simulationState.intervalID = undefined;
+        // Pause
+        if (sim.intervalID) {
+            clearInterval(sim.intervalID);
+            sim.intervalID = undefined;
             return;
         }
-
-        // if (!simulationState.intervalID && simulationState.playing) {
-        //     simulationState.intervalID = setInterval( () => Grid_Utils.nextGridFrame(grid), runTimeParameters.stepPeriodMilliseconds);
-        //     return;
-        // }
-
-        // if (simulationState.intervalID && !simulationState.playing) {
-        //     clearInterval(simulationState.intervalID);
-        //     return;
-        // }
-    
-
-
-
-
-
-        // if (simulationState) {
-        //    // callOnInterval(runTimeParameters.stepPeriodMilliseconds, () => Grid_Utils.nextGridFrame(grid), () => !simulationState.playing);
-        // }
     }
-    
-    function clearSimulationGrid(grid: Grid) {
-        if (simulationRunning(simulationState)) {
-            pausePlaySimulation(grid);
+
+    const pauseSimulation = (sim: SimulationState) => {
+        if (simulationRunning(sim)) {
+            toggleSimulation(sim);
         }
+    }
+
+    function clearSimulationGrid(sim: SimulationState) {
+        pauseSimulation(sim);
     
-        forEachCellInGrid(grid, (cell: Cell) => {
+        forEachCellInGrid(sim.grid, (cell: Cell) => {
             cell.checked = false;
         });
     }
     
-    function stepSimulation(grid: Grid)  {
-        if (simulationRunning(simulationState)) {
-            pausePlaySimulation(grid);
-        }
+    function stepSimulation(sim: SimulationState)  {
+        pauseSimulation(sim);
 
-        Grid_Utils.nextGridFrame(grid)
+        Grid_Utils.nextGridFrame(sim)
     }
     
-    function setGridRandom(grid: Grid)  {
-        if (simulationRunning(simulationState)) {
-            pausePlaySimulation(grid);
-        }
+    function setGridRandom(sim: SimulationState)  {
+        pauseSimulation(sim);
 
-        Grid_Utils.randomizeGrid(grid)
+        Grid_Utils.randomizeGrid(sim)
     }
     
-    document.getElementById("random")!.addEventListener("click", () => setGridRandom(simulationState.grid));
-    document.getElementById("step")!.addEventListener("click", () => stepSimulation(simulationState.grid));
-    document.getElementById("pausePlay")!.addEventListener("click", () => pausePlaySimulation(simulationState.grid));
-    document.getElementById("clear")!.addEventListener("click", () => clearSimulationGrid(simulationState.grid));
+    document.getElementById("random")!.addEventListener("click", () => setGridRandom(sim));
+    document.getElementById("step")!.addEventListener("click", () => stepSimulation(sim));
+    document.getElementById("pausePlay")!.addEventListener("click", () => toggleSimulation(sim));
+    document.getElementById("clear")!.addEventListener("click", () => clearSimulationGrid(sim));
 }
 
 

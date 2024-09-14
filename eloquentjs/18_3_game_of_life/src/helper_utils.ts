@@ -5,7 +5,7 @@ function arrayFromElementChildren(element: HTMLElement): Array<HTMLElement>  {
     return <Array<HTMLElement>>Array.from(element.children);
 }
 
-const positiveModulo = (input: number, wrapNumber: number) => ((input % wrapNumber) + wrapNumber) % wrapNumber;
+const positiveModulo = (n: number, wrapNumber: number) => ((n % wrapNumber) + wrapNumber) % wrapNumber;
 
 function forEachCellInGrid(grid: Grid, callback: Function) {
     for (let row of arrayFromElementChildren(grid)) {
