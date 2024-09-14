@@ -1,4 +1,11 @@
-function callOnInterval(intervalMilliseconds: number, callback: Function, stopCondition: Function = () => false) {
+/**
+ * Calls a program periodically. Guaranteed call sequence compared to setInterval.
+ * Optional halt callback
+ * @param intervalMilliseconds 
+ * @param callback 
+ * @param stopCondition 
+ */
+function callOnInterval(intervalMilliseconds: number, callback: Function, halt: Function = () => false) {
     let lastCallTime: number | null = null;
 
     function loop(time: number) {
@@ -6,7 +13,7 @@ function callOnInterval(intervalMilliseconds: number, callback: Function, stopCo
             lastCallTime = time;
         }
 
-        if (stopCondition()){
+        if (halt()){
             return;
         }
        
