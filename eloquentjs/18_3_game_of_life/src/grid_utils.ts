@@ -1,11 +1,21 @@
 export type Grid = Array<Array<HTMLInputElement>>;
 
-function generateGrid(targetElement : HTMLDivElement, gridSize: number) {
+
+const arrayFromElementChildren = (element: HTMLElement) => Array.from(element.children);
+
+/**
+ * Builds the grid within gridContainer and returns a 2D reference array to the cells.
+ * The reference arrays indices match 1-1 with grid coordinates.
+ * @param gridContainer 
+ * @param gridSize 
+ * @returns 
+ */
+function generateGrid(gridContainer : HTMLDivElement, gridSize: number) {
     let gridReference: Grid = [];
 
     for (let y = 0; y < gridSize; y++) {
         let rowElement = document.createElement('div');
-        rowElement.setAttribute("class", "customRow");
+        rowElement.setAttribute("class", "gridRow");
 
         for (let x = 0; x < gridSize; x++) {
            let cell = document.createElement("input");
@@ -17,50 +27,16 @@ function generateGrid(targetElement : HTMLDivElement, gridSize: number) {
            rowElement.appendChild(cell);
         }
 
-        targetElement.appendChild(rowElement);
+        gridContainer.appendChild(rowElement);
     }
 
-    return targetElement;
+    return gridContainer;
 }
 
-function randomizeGrid(grid: HTMLElement) {
-    let rows = Array.from(grid.children);
-
-    for (let row of rows) {
-        let cells = Array.from(row.children);
-        for (let cell of  cells) {
+function randomizeGrid(grid: HTMLDivElement) {
+    for (let row of arrayFromElementChildren(grid as any)) {
+        for (let cell of  arrayFromElementChildren(row as any)) {
             (cell as HTMLInputElement).checked = Math.random() > 0.5;
-        }
-    }
-}
-
-function nextGridFrame(grid : HTMLElement) {
-    let rows = Array.from(grid.children);
-
-    for (let row of rows) {
-        let cells = Array.from(row.children);
-        for (let cell of cells) {
-
-            let neighbours = getCellNeighbours(grid, cell);
-            let livingNeighboursCount = tallyLivingCells(neighbours);
-
-            let alive = (cell as HTMLInputElement).checked!;
-
-            if (!alive && livingNeighboursCount === 3) {
-                cell.toggleAttribute("live", true);
-            } else if (alive && (livingNeighboursCount === 3 || livingNeighboursCount === 2)) {
-                cell.toggleAttribute("live", true);
-            } else {
-                cell.toggleAttribute("live", false);
-            }
-            
-        }
-    }
-
-    for (let row of rows) {
-        let cells = Array.from(row.children);
-        for (let cell of cells) {
-            (cell as HTMLInputElement).checked = (cell as any).getAttribute("live") !== null;
         }
     }
 }
@@ -76,7 +52,7 @@ function tallyLivingCells(cells: Array<HTMLInputElement>) {
     return output;
 }
 
-function getCellNeighbours(grid: HTMLElement, cell: any) {
+function getCellNeighbours(grid: HTMLDivElement, cell: HTMLInputElement) {
     let addressOffsets = [
             {x: 1 ,y: 0 },
             {x: 1 ,y:-1 },
@@ -89,27 +65,58 @@ function getCellNeighbours(grid: HTMLElement, cell: any) {
 
     let neighbours: Array<HTMLInputElement> = [];
 
-    let cellX: number = parseInt(cell.getAttribute('x'));
-    let cellY: number = parseInt(cell.getAttribute('y'));
+    let cellXPos: number = parseInt((cell as any).getAttribute('x'));
+    let cellYPos: number = parseInt((cell as any).getAttribute('y'));
 
     let gridSize = Array.from(grid.children).length
 
     const modulo = (input: number, wrapNumber: number) => ((input % wrapNumber) + wrapNumber) % wrapNumber;
 
     for (let offset of addressOffsets) {
-        let y = modulo(offset.y + cellY, gridSize);
-        let x = modulo(offset.x + cellX, gridSize);
+        let y = modulo(offset.y + cellYPos, gridSize);
+        let x = modulo(offset.x + cellXPos, gridSize);
 
         let row = Array.from(grid.children)[y];
         let cell = Array.from(row.children)[x];
 
 
         neighbours.push(cell as HTMLInputElement);
-        
     }
 
     return neighbours
 }
 
+function nextGridFrame(grid : HTMLDivElement) {
+    let rows = arrayFromElementChildren(grid)
+
+    for (let row of rows) {
+        for (let cell of arrayFromElementChildren(row as any)) {
+            let neighbours = getCellNeighbours(grid, (cell as HTMLInputElement));
+            let livingNeighboursCount = tallyLivingCells(neighbours);
+
+            let cellAlive = (cell as HTMLInputElement).checked!;
+
+            const isTwoOrThree = (j: number) => (j === 3 || j === 2);
+            
+            const cellLives = () => (cell as HTMLInputElement).toggleAttribute("live", true);
+            const cellDies = () => (cell as HTMLInputElement).toggleAttribute("live", false);
+
+            // Core simulation rules
+            if (!cellAlive && livingNeighboursCount === 3) {
+                cellLives();
+            } else if (cellAlive && isTwoOrThree(livingNeighboursCount)) {
+                cellLives();
+            } else {
+                cellDies();
+            }
+        }
+    }
+
+    for (let row of rows) {
+        for (let cell of arrayFromElementChildren(row as any)) {
+            (cell as HTMLInputElement).checked = (cell as any).getAttribute("live") !== null;
+        }
+    }
+}
 
 export { generateGrid, randomizeGrid, nextGridFrame }

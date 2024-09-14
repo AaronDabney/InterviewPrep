@@ -1,19 +1,20 @@
-import * as Grid_Utils from './grid_utils';
-import { Grid } from './grid_utils';
-import { callOnInterval } from './callOnInterval';
+
+import * as ControlSetup from './controlSetup';
+import * as Grid_Utils from './grid_utils'
+import { callOnInterval } from './callOnInterval'
 
 
 let gridContainer: HTMLDivElement = document.getElementById("gridContainer") as HTMLDivElement;
 
 let grid = Grid_Utils.generateGrid(gridContainer, 50);
 
+document.getElementById("random").addEventListener("click", () => Grid_Utils.randomizeGrid(grid));
+
+document.getElementById("step").addEventListener("click", () => Grid_Utils.nextGridFrame(grid));
+
 let simulationState = {
     playing: false
 };
-
-document.getElementById("random").addEventListener("click", () => Grid_Utils.randomizeGrid(grid));
-
-document.getElementById("next").addEventListener("click", () => Grid_Utils.nextGridFrame(grid));
 
 
 const pausePlaySimulation = () => {
@@ -41,3 +42,67 @@ document.getElementById("clear").addEventListener("click", () => {
         }
     }
 });
+
+
+// async function gameOfLife(controlInterface: any) {
+
+//     let playing = true;
+//     let deltaTime = 500; 
+    
+//     let gridContainer = document.getElementById("gridContainer");
+//     let grid = Grid_Utils.generateGrid(gridContainer as HTMLDivElement, 30);
+//     Grid_Utils.randomizeGrid(grid);
+
+//    // let intervalID = setInterval(runTime, deltaTime)
+
+//    function runTime() {
+
+//    }
+
+//  //  callOnInterval(runTime, 50);
+
+//     // function runTime() {
+//     //     Grid_Utils.nextGridFrame(grid);
+//     //     console.log("tock")
+
+//     //     let commandsUpdated = objectHasTruthyValues(controlInterface);
+
+//     //     if (playing && !commandsUpdated) {
+//     //         Grid_Utils.nextGridFrame(grid);
+//     //         return;
+//     //     }
+
+//     //     if (!playing && !commandsUpdated) {
+//     //         return;
+//     //     }
+        
+//     //     if (playing && controlInterface.pausePlay) {
+//     //         playing = false;
+//     //         clearInterval(intervalID);
+//     //         return;
+//     //     }
+
+//     //     if (!playing && controlInterface.pausePlay) {
+//     //         playing = true;
+//     //         intervalID = setInterval(runTime, deltaTime)
+//     //         return;
+//     //     }
+
+//     //     runTime();
+
+//     // }
+
+//     const objectHasTruthyValues = (object: any) =>  Object.keys(object).some(key => object[key]);
+//     const setAllObjectValuesFalse = (object: any) =>  Object.keys(object).forEach(key => object[key] = false);
+// }
+
+
+// let buttonIdentifierList = [
+//     'pausePlay',
+//     'step',
+//     'clear',
+//     'random'];
+
+// let controlInterface = ControlSetup.buildControlInterface(buttonIdentifierList);
+
+//gameOfLife(controlInterface);
