@@ -1,14 +1,11 @@
-import { CommandData } from "./controlMapping";
-
-import { controlMapping } from "./controlMapping"
 import { runGame } from "./runTime";
 import { GAME_LEVELS } from "./levels/gameLevels"
 
-
-const commands: CommandData = controlMapping({
+let commandMap = {
     left: "ArrowLeft",
     right: "ArrowRight",
-    jump: "ArrowUp"
-});
+    jump: "ArrowUp",
+    pause: "Escape"
+}
 
-runGame(GAME_LEVELS, commands);
+runGame(GAME_LEVELS, commandMap);

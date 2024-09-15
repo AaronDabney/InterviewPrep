@@ -2,6 +2,8 @@ export interface CommandData {
     left?: boolean,
     right?: boolean,
     jump?: boolean,
+    pause?: boolean
+    removeListeners?: Function,
 }
 
 /**
@@ -21,6 +23,13 @@ function controlMapping(controlPairs: Object): CommandData {
         }
     }
 
+    down.removeListeners = () => {
+        console.log("Removing command data event listeners");
+        window.removeEventListener("keydown", track);
+        window.removeEventListener("keyup", track);
+    }
+
+    console.log("Adding command data event listeners");
     window.addEventListener("keydown", track);
     window.addEventListener("keyup", track);
 

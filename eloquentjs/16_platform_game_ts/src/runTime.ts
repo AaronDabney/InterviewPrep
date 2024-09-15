@@ -3,12 +3,15 @@ import { GameState } from "./gameState";
 import { Level } from "./level";
 import { DisplayState } from "./displayState";
 
+import * as Control_Utils from "./controlMapping";
 import * as Level_Utils from "./level";
 import * as DisplayState_Utils from "./displayState";
 import * as GameState_Utils from  "./gameState";
 
 
-async function runGame(levelPlans: Array<string>, commands: CommandData) {
+async function runGame(levelPlans: Array<string>, commandMap: Object) {
+    let controller = Control_Utils.controlMapping(commandMap);
+
     const maxLives = 3;
     let lives = maxLives;
 
@@ -18,7 +21,7 @@ async function runGame(levelPlans: Array<string>, commands: CommandData) {
 
         const levelData = Level_Utils.planToLevel(levelPlans[levelIndex])
 
-        const status = await runLevel(levelData, commands);
+        const status = await runLevel(levelData, controller);
 
         if (status === "won") {
             levelIndex++;
@@ -37,19 +40,40 @@ async function runGame(levelPlans: Array<string>, commands: CommandData) {
         }
     }
 
-   console.log("You've won!");
+    controller.removeListeners();
+    console.log("You've won!");
 }
 
-function runLevel(level: Level, commands: CommandData)  {
+function runLevel(level: Level, controller: CommandData)  {
     let gameState: GameState = GameState_Utils.createGameState(level, 'playing');
     let gameDisplay: DisplayState = DisplayState_Utils.createDisplayState(level); 
-
+    
     let levelEndDelay = 1;
+
+    let paused = false;
+    // A small delay mitigates rapid pausing/unpausing
+    const pauseDebounceTime = 0.1;
+    let pauseToggleTimer = pauseDebounceTime;
 
     return new Promise(resolve => {
 
         runAnimation((deltaTime: number) => {
-            gameState = GameState_Utils.updateGameState(gameState, deltaTime, commands);
+            const pauseToggle = controller.pause;
+
+            if (pauseToggle && pauseToggleTimer <= 0) {
+                paused = !paused
+                pauseToggleTimer = pauseDebounceTime;
+            }
+
+            if (pauseToggleTimer > 0) {
+                pauseToggleTimer -= deltaTime;
+            }
+
+            if (paused) {
+                deltaTime = 0;
+            }
+
+            gameState = GameState_Utils.updateGameState(gameState, deltaTime, controller);
             gameDisplay = DisplayState_Utils.displaySync(gameState, gameDisplay);
 
             if (gameState.status == "playing") {
