@@ -8,4 +8,5 @@ const runParams: RunTimeParameters = {
     containerElement: <HTMLDivElement>document.getElementById("gridContainer"),
 }
 
+
 runGameOfLife(runParams);

@@ -3,6 +3,7 @@ import { Grid, Cell } from './grid_utils';
 import {  SimulationState, buildSimulationStateFromRunTimeParameters } from './sim_utils';
 import { arrayFromElementChildren, forEachCellInGrid } from './helper_utils';
 
+
 export interface RunTimeParameters {
     gridSize: number;
     stepPeriodMilliseconds: number;
