@@ -5,6 +5,7 @@ import * as Vector_Utils from './vector_utils';
 import * as Lava from './actors/lava';
 import * as Coin from './actors/coin';
 import * as Player from './actors/player';
+import * as Gremlin from './actors/gremlin';
 
 export interface Level {
     rows: Array<Array<string>>;
@@ -12,6 +13,7 @@ export interface Level {
     width: number;
     actors: Array<Actor>;
 }
+
 
 /**
  * Builds level object from string
@@ -63,7 +65,8 @@ const levelActorMap = {
     "o": (position: Vector2) => Coin.create(position),
     "=": (position: Vector2) => Lava.create(position, 'sliding'),
     "|": (position: Vector2) => Lava.create(position, 'bouncing'),
-    "v": (position: Vector2) => Lava.create(position, 'dropping')
+    "v": (position: Vector2) => Lava.create(position, 'dropping'),
+    "&": (position: Vector2) => Gremlin.create(position)
 }
 
 /**

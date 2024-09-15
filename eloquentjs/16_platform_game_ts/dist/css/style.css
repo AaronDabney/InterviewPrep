@@ -32,6 +32,11 @@ body {
     background: rgb(64, 64, 64); 
 }
 
+.gremlin {
+    background: rgb(4, 119, 23); 
+}
+
+
 .lost .player {
     background: rgb(160, 64, 64);
 }
