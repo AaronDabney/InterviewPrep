@@ -1,52 +1,34 @@
-import { PictureCanvas } from "./canvas_utils";
-import * as Canvas_Utils from "./canvas_utils";
-import { elt } from "./helper_utils";
+import { Pixel } from "../legacy/modules/pixels";
+import { HexColor, Picture } from "./picture";
+
+import * as Picture_Utils from './picture'
+import *  as PictureCanvas_Utils from './pictureCanvas'
 
 export interface PixelEditor {
-    state: any;
-    canvas: PictureCanvas;
-    controls?: any;
-    dom: HTMLElement;
+    picture: Picture
+    activeToolID: string,
+    color: HexColor
+    canvas?: HTMLElement;
+    controls?: Array<HTMLElement>;
+    dom?: HTMLElement;
 }
 
+function create(): PixelEditor {
 
+    let picture = Picture_Utils.createEmpty(30, 60, '#ffaaff');
+    let activeToolID = 'draw';
+    let color = '#aabb66'
 
-function create(state: any, config: any) {
-    let { tools, controlMap, dispatch } = config;
+    let subState: PixelEditor = {
+        picture: picture,
+        activeToolID: activeToolID,
+        color: <HexColor>color,
+    }
 
-    console.log(state);
-
-    let canvas = Canvas_Utils.create(state.picture, (pos: any) => {
-        let tool = tools[state.tool];
-        let onMove = tool(pos, state, dispatch);
-        if (onMove) {
-            return (pos: any)=> onMove(pos, state);
+    let canvas = PictureCanvas_Utils.create(picture, 
+        pos => {
+            //let tool = tools[activeToolID];
+            let onMove = tool(pos, subState, dispatch);
         }
-    });
-
-    let controls = controlMap.map((control: Function) => () => control(state, config));//{new Control(state, config);});
-
-    let dom = elt("div", {}, canvas.dom, elt("br"),
-                   ...controlMap.reduce(
-                     (a: any, c: any) => a.concat(" ", c.dom), []));
-    
-    return {
-        state: state,
-        canvas: canvas,
-        controls: controls,
-        dom: dom,
-    }
-
+    )
 }
-
-
-function syncState(pixelEditor: PixelEditor, state: any) {
-    pixelEditor.state = state;
-    pixelEditor.canvas = state.picture;
-    for (let ctrl of pixelEditor.controls) {
-        console.log(ctrl)
-        ctrl.syncState(ctrl, state);
-    }
-}
-
-export {create, syncState}
