@@ -10,7 +10,7 @@ import { SimulationState } from "./sim_utils";
 
 
 export type Grid = HTMLDivElement;
-export type Cell = HTMLInputElement;
+export type Cell = HTMLInputElement & {x: number, y: number, live?: boolean};
 
 function buildGrid(containerElement: HTMLElement, gridSize: number): Grid {
     for (let y = 0; y < gridSize; y++) {
@@ -18,11 +18,14 @@ function buildGrid(containerElement: HTMLElement, gridSize: number): Grid {
         rowElement.setAttribute("class", "gridRow");
 
         for (let x = 0; x < gridSize; x++) {
-           const cell = document.createElement("input");
+           const cell: Cell = <Cell>document.createElement("input");
            cell.type = "checkbox";
 
-           cell.setAttribute("x", x.toString());
-           cell.setAttribute("y", y.toString());
+            Object.assign(cell, {
+                x: x,
+                y: y,
+                live: false
+            })
 
            rowElement.appendChild(cell);
         }
@@ -64,8 +67,8 @@ function getCellNeighbours(sim: SimulationState, centerCell: Cell): Array<Cell> 
 
     const cellNeighbours: Array<Cell> = [];
     
-    const centerCellPositionX: number = parseInt(centerCell.getAttribute('x'));
-    const centerCellPositionY: number = parseInt(centerCell.getAttribute('y'));
+    const centerCellPositionX: number = centerCell.x;
+    const centerCellPositionY: number = centerCell.y;
         
     const rows = arrayFromElementChildren(sim.grid);
 
@@ -100,7 +103,7 @@ function nextGridFrame(sim: SimulationState) {
     });
 
     forEachCellInGrid(sim.grid, (cell: Cell) => {
-        cell.checked = cell.getAttribute("live") !== null;
+        cell.checked = cell.live;
     });
 }
 
