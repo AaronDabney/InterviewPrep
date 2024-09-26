@@ -4,11 +4,11 @@ import { draw } from './tools';
 import { PixelEditorState, PixelEditorComponentConfig } from './pixelEditor';
 
 function createToolSelect({state, tools, dispatch}: PixelEditorComponentConfig) {
-    let toolOptionFromToolID = ((toolID: string) => elt("option", {selected: toolID === state.activeToolID, innerText: toolID}));
+    const toolOptionFromToolID = ((toolID: string) => elt("option", {selected: toolID === state.activeToolID, innerText: toolID}));
 
-    let toolOptions = Array.from(tools.keys()).map(toolID => toolOptionFromToolID(toolID));
+    const toolOptions = Array.from(tools.keys()).map(toolID => toolOptionFromToolID(toolID));
 
-    let select = <HTMLInputElement>elt("select", {
+    const select = <HTMLInputElement>elt("select", {
         onchange: () => {
             dispatch({activeToolID: select.value})
         }
@@ -21,24 +21,24 @@ function createToolSelect({state, tools, dispatch}: PixelEditorComponentConfig) 
 }
 
 function createColorSelect({state, dispatch}: PixelEditorComponentConfig) {
-    let input = elt("input", {
+    const input = <HTMLInputElement>elt("input", {
         type: "color",
         value: state.color
     });
 
-    input.onchange = () => dispatch({color: (<HTMLInputElement>input).value});
+    input.onchange = () => dispatch({color: input.value});
 
-    let dom = elt("label", null, "Color: ", input);
+    const dom = elt("label", null, "Color: ", input);
 
     return {
         dom: dom,
-        syncState: (state: PixelEditorState) => (<HTMLInputElement>input).value = state.color
+        syncState: (state: PixelEditorState) => input.value = state.color
     }
 }
 
 
 function createSaveButton({state}: PixelEditorComponentConfig) {
-    let dom = elt("button", {
+    const dom = elt("button", {
         onclick: () => save(),
         innerText: "Save"
     });
@@ -59,7 +59,7 @@ function createSaveButton({state}: PixelEditorComponentConfig) {
         link.remove();
     }
 
-    let syncState = (state: PixelEditorState) => picture = state.picture;
+    const syncState = (state: PixelEditorState) => picture = state.picture;
 
     return {
         dom: dom,
@@ -70,15 +70,15 @@ function createSaveButton({state}: PixelEditorComponentConfig) {
 
 
 function createLoadButton({dispatch}: PixelEditorComponentConfig) {
-    let dom = elt("button", {
+    const dom = elt("button", {
         onclick: () => startLoad(dispatch),
         innerText: "Load"
     });
 
     function startLoad(dispatch: Function) {
-        let input = elt("input", {
+        const input = <HTMLInputElement>elt("input", {
             type: "file",
-            onchange: () => finishLoad((<any>input).files[0], dispatch)
+            onchange: () => finishLoad(input.files[0], dispatch)
         });
         
         document.body.appendChild(input);
@@ -91,10 +91,10 @@ function createLoadButton({dispatch}: PixelEditorComponentConfig) {
             return;
         }
 
-        let reader = new FileReader();
+        const reader = new FileReader();
 
         reader.addEventListener("load", () => {
-            let image = elt("img" , {
+            const image = elt("img" , {
                 onload: () => dispatch({picture: pictureFromImage(<HTMLImageElement>image)}),
                 src: reader.result
             });
@@ -104,23 +104,23 @@ function createLoadButton({dispatch}: PixelEditorComponentConfig) {
     }
 
     function pictureFromImage(image: HTMLImageElement) {
-        let width = Math.min(100, image.width);
-        let height = Math.min(100, image.height);
+        const width = Math.min(100, image.width);
+        const height = Math.min(100, image.height);
         
-        let canvas = <HTMLCanvasElement>elt("canvas", {width, height});
-        let ctx = canvas.getContext("2d");
+        const canvas = <HTMLCanvasElement>elt("canvas", {width, height});
+        const ctx = canvas.getContext("2d");
         ctx.drawImage(image, 0, 0);
 
-        let pixelColors = [];
+        const pixelColors = [];
 
-        let { data } = ctx.getImageData(0, 0, width, height);
+        const { data } = ctx.getImageData(0, 0, width, height);
         
         function hex(n: number) {
             return n.toString(16).padStart(2, "0");
         }
 
         for (let i = 0; i < data.length; i += 4) {
-            let [r, g, b] = data.slice(i, i + 3);
+            const [r, g, b] = data.slice(i, i + 3);
             pixelColors.push('#' + hex(r) + hex(g) + hex(b))
         }
 

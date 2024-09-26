@@ -3,14 +3,14 @@ import * as Picture_Utils from './modules/picture'
 import { draw, rectangle, fill, pick } from './modules/tools'
 import { createToolSelect, createColorSelect, createSaveButton, createLoadButton, createUndoButton } from './modules/controls'
 
-let toolMap = new Map([
+const toolMap = new Map([
     ['draw', draw],
     ['rectangle', rectangle],
     ['fill', fill],
     ['pick', pick]
 ]);
 
-let controlInitializers = [
+const controlInitializers = [
     createToolSelect,
     createColorSelect,
     createSaveButton,
@@ -18,7 +18,7 @@ let controlInitializers = [
     createUndoButton
 ];
 
-let startState: PixelEditor_Utils.PixelEditorState = {
+const startState: PixelEditor_Utils.PixelEditorState = {
     activeToolID: 'draw',
     color: '#000000',
     picture: Picture_Utils.createEmpty(60, 60, '#ffffff'), // cyan
@@ -26,6 +26,6 @@ let startState: PixelEditor_Utils.PixelEditorState = {
     doneAt: 0
 };
 
-let app = <Node>PixelEditor_Utils.create(startState, toolMap, controlInitializers, 10);
+const app = <Node>PixelEditor_Utils.create(startState, toolMap, controlInitializers, 10);
 
 document.getElementById("pixelEditorApp").appendChild(app);

@@ -12,7 +12,7 @@ export interface PictureCanvas {
 }
 
 function create(picture : Picture, pointerDown: Function, pixelScale: number) {
-    let dom = document.createElement("canvas");
+    const dom = document.createElement("canvas");
 
     dom.onmousedown = (event: MouseEvent) => mouse(event, pointerDown, dom, pixelScale);
     
@@ -32,7 +32,7 @@ function create(picture : Picture, pointerDown: Function, pixelScale: number) {
 function drawPicture(picture: Picture, canvas: HTMLCanvasElement, pixelScale: number) {
     canvas.width = picture.width * pixelScale;
     canvas.height = picture.height * pixelScale;
-    let ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d');
     
     for (let y = 0; y < picture.height; y++) {
         for (let x = 0; x < picture.width; x++) {
@@ -43,14 +43,14 @@ function drawPicture(picture: Picture, canvas: HTMLCanvasElement, pixelScale: nu
 }
 
 function mouse(downEvent: MouseEvent, onDown: Function, canvasDOM: HTMLCanvasElement, pixelScale: number) {
-    let leftMouseDown = (downEvent.button === 0);
+    const leftMouseDown = (downEvent.button === 0);
 
     if (!leftMouseDown) {
         return;
     }
 
     let position = pointerPosition(downEvent, canvasDOM, pixelScale);
-    let onMove = onDown(position);
+    const onMove = onDown(position);
 
     if (!onMove) {
         return;
@@ -60,9 +60,9 @@ function mouse(downEvent: MouseEvent, onDown: Function, canvasDOM: HTMLCanvasEle
         if (moveEvent.buttons === 0) {
             canvasDOM.removeEventListener("mousemove", move);
         } else {
-            let newPosition = pointerPosition(moveEvent, canvasDOM, pixelScale);
+            const newPosition = pointerPosition(moveEvent, canvasDOM, pixelScale);
 
-            let positionChanged = (newPosition.x !== position.x || newPosition.y !== position.y);
+            const positionChanged = (newPosition.x !== position.x || newPosition.y !== position.y);
 
             if (!positionChanged) {
                 return;
@@ -79,6 +79,7 @@ function mouse(downEvent: MouseEvent, onDown: Function, canvasDOM: HTMLCanvasEle
 
 function pointerPosition(mouseEvent: MouseEvent, domNode: HTMLElement, pixelScale: number) {
     let rect = domNode.getBoundingClientRect();
+    
     return {x: Math.floor((mouseEvent.clientX - rect.left) / pixelScale),
             y: Math.floor((mouseEvent.clientY - rect.top) / pixelScale)}
 }

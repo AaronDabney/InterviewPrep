@@ -9,6 +9,7 @@ export type HexColor = `#${string}`;
  */
 function elt(type: string, props: Object | null | undefined, ...children: Array<HTMLElement | string>) {
     let dom = document.createElement(type);
+    
     if (props) {
         Object.assign(dom, props);
     }

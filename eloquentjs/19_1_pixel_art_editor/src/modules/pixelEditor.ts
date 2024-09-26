@@ -24,13 +24,13 @@ function create(state: PixelEditorState, tools: Map<string, Function>, controlIn
         syncState(state);
     }
 
-    let componentConfig: PixelEditorComponentConfig = {
+    const componentConfig: PixelEditorComponentConfig = {
         state,
         tools,
         dispatch,
     }
 
-    let pictureCanvas = PictureCanvas_Utils.create(state.picture, 
+    const pictureCanvas = PictureCanvas_Utils.create(state.picture, 
         (mouseEvent: MouseEvent) => {
             let tool = tools.get(state.activeToolID);
             let onMove = tool(mouseEvent, state, dispatch);
@@ -41,7 +41,7 @@ function create(state: PixelEditorState, tools: Map<string, Function>, controlIn
         pixelScale
     );
 
-    let controls = controlInits.map(createControlComponent => createControlComponent(componentConfig))
+    const controls = controlInits.map(createControlComponent => createControlComponent(componentConfig))
 
     function syncState(state: PixelEditorState) {
         pictureCanvas.syncState(state)
@@ -52,15 +52,13 @@ function create(state: PixelEditorState, tools: Map<string, Function>, controlIn
         }
     }
 
-    let canvasDOM = pictureCanvas.dom;
+    const canvasDOM = pictureCanvas.dom;
     canvasDOM.setAttribute("class", "pixel-editor canvas");
 
-    let controlBarDOM = elt("div", {}, ...controls.map(cntrl => cntrl.dom))
+    const controlBarDOM = elt("div", {}, ...controls.map(cntrl => cntrl.dom))
     controlBarDOM.setAttribute("class", "pixel-editor control-bar");
 
-    let pixelEditorDom = elt("div", {
-        tabIndex: 0,
-    }, controlBarDOM, canvasDOM);
+    const pixelEditorDom = elt("div", { tabIndex: 0 }, controlBarDOM, canvasDOM);
     pixelEditorDom.setAttribute("class", "pixel-editor frame");
 
     return pixelEditorDom;
