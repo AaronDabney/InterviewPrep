@@ -1,4 +1,9 @@
 import { Picture } from "./picture";
+import { elt } from "./helper";
+import { getPixelColor } from "./picture";
+import { PixelEditorState } from "./pixelEditor";
+import { Vector2 } from './vector2'
+
 
 export interface PictureCanvas {
     dom: HTMLElement;
@@ -6,69 +11,77 @@ export interface PictureCanvas {
     syncState: Function;
 }
 
-const scale = 10;
+function create(picture : Picture, pointerDown: Function, pixelScale: number) {
+    let dom = document.createElement("canvas");
 
-function create(picture : Picture, pointerDown: Function) {
+    dom.onmousedown = (event: MouseEvent) => mouse(event, pointerDown, dom, pixelScale);
+    
+    drawPicture(picture, dom, pixelScale)
+
     return {
-        dom: elt("canvas", {
-            onMouseDown: event => mouse(event, pointerDown)
-        }),
+        dom: dom,
         picture: picture,
-        syncState: (picture: Picture) => {
-            if (this.picture === picture) {
-                return;
-            } else {
-                this.picture = picture;
-                console.log("Draw Picture here")
-            }
+        syncState: (state: PixelEditorState) => {
+            picture = state.picture;
+            drawPicture(picture, dom, pixelScale)
         }
     }
+
 }
 
+function drawPicture(picture: Picture, canvas: HTMLCanvasElement, pixelScale: number) {
+    canvas.width = picture.width * pixelScale;
+    canvas.height = picture.height * pixelScale;
+    let ctx = canvas.getContext('2d');
+    
+    for (let y = 0; y < picture.height; y++) {
+        for (let x = 0; x < picture.width; x++) {
+            ctx.fillStyle = getPixelColor(x, y, picture);
+            ctx.fillRect(x * pixelScale, y * pixelScale, pixelScale, pixelScale)
+        }
+    }   
+}
 
+function mouse(downEvent: MouseEvent, onDown: Function, canvasDOM: HTMLCanvasElement, pixelScale: number) {
+    let leftMouseDown = (downEvent.button === 0);
 
+    if (!leftMouseDown) {
+        return;
+    }
 
-function mouse(downEvent, onDown) {
-    let pictureCanvas = downEvent.currentTarget; //experimental
-    if (downEvent.button != 0) return;
-    let pos = pointerPosition(downEvent, pictureCanvas.dom);
-    let onMove = onDown(pos);
-    if (!onMove) return;
+    let position = pointerPosition(downEvent, canvasDOM, pixelScale);
+    let onMove = onDown(position);
 
-    let move = moveEvent => {
-      if (moveEvent.buttons == 0) {
-        pictureCanvas.dom.removeEventListener("mousemove", move);
-      } else {
-        let newPos = pointerPosition(moveEvent, pictureCanvas.dom);
-        if (newPos.x == pos.x && newPos.y == pos.y) return;
-        pos = newPos;
-        onMove(newPos);
-      }
+    if (!onMove) {
+        return;
+    }
+
+    let move = (moveEvent: MouseEvent) => {
+        if (moveEvent.buttons === 0) {
+            canvasDOM.removeEventListener("mousemove", move);
+        } else {
+            let newPosition = pointerPosition(moveEvent, canvasDOM, pixelScale);
+
+            let positionChanged = (newPosition.x !== position.x || newPosition.y !== position.y);
+
+            if (!positionChanged) {
+                return;
+            }
+
+            position = newPosition;
+            onMove(newPosition);
+        }
     };
-    pictureCanvas.dom.addEventListener("mousemove", move);
+
+    canvasDOM.addEventListener("mousemove", move)
 };
 
 
-function pointerPosition(pos, domNode) {
+function pointerPosition(mouseEvent: MouseEvent, domNode: HTMLElement, pixelScale: number) {
     let rect = domNode.getBoundingClientRect();
-    return {x: Math.floor((pos.clientX - rect.left) / scale),
-            y: Math.floor((pos.clientY - rect.top) / scale)};
+    return {x: Math.floor((mouseEvent.clientX - rect.left) / pixelScale),
+            y: Math.floor((mouseEvent.clientY - rect.top) / pixelScale)}
 }
 
 
-
-function drawPicture(picture, canvas, scale) {
-    canvas.width = picture.width * scale;
-    canvas.height = picture.height * scale;
-    let cx = canvas.getContext("2d");
-  
-    for (let y = 0; y < picture.height; y++) {
-      for (let x = 0; x < picture.width; x++) {
-        cx.fillStyle = picture.pixel(x, y);
-        cx.fillRect(x * scale, y * scale, scale, scale);
-      }
-    }
-  }
-
-  export { create }
-  
+export { create, drawPicture }

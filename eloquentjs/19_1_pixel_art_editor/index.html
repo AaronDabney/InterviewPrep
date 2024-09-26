@@ -6,13 +6,40 @@
         <title>Pixel Art Editor</title>
         <style>
             body {
-                background-color: rgb(27, 27, 53);
+                background-color: rgb(114, 114, 116);
+                color: white;
             }
-        </style>
+
+            #pixelEditorApp {
+                max-width: fit-content;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 100px;
+            }
+
+            .pixel-editor .canvas {
+                border-style: outset;
+                border-width: 5px;
+                border-color: rgb(39, 39, 39); 
+
+            }
+
+            .pixel-editor .control-bar {
+                border-style: inset;
+                border-width: 5px;
+                border-color: rgb(39, 39, 39); 
+                background-color: rgb(71, 71, 71);
+
+            }
+
+            button {
+                float:right
+            }
+            </style>
     </head>
 
     <body>
-        <div></div>
+        <div id="pixelEditorApp"></div>
     </body>
     <script src="dist/main.js" type="text/javascript"></script>
 </html>
