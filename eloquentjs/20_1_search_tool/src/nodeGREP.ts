@@ -18,8 +18,8 @@ console.log(nodeGREP(regeExpString, filesAndFolders));
  * @returns 
  */
 function nodeGREP(regexpString: string, searchTargets: Array<string>): Array<string> {
-    let validSearchTargets: Array<string> = searchTargets.filter(target => fs.existsSync(target))
-    let invalidSearchTargets: Array<string> = searchTargets.filter(target => !fs.existsSync(target))
+    let validSearchTargets: Array<string> = searchTargets.filter(target => fs.existsSync(target));
+    let invalidSearchTargets: Array<string> = searchTargets.filter(target => !fs.existsSync(target));
 
     for (let target of invalidSearchTargets) {
         console.log(`Target does not exist: ${target}`)
