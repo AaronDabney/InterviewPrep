@@ -10,18 +10,22 @@ interface ServerResponse {
     type?: string
 }
 
+interface ServerMethods {
+    GET: Function;
+    PUT: Function;
+    MKCOL: Function;
+    DELETE: Function;
+}
 
-const methods = Object.create(null);
+type Method = keyof ServerMethods;
 
-methods.GET = GET;
-methods.PUT = PUT;
-methods.MKCOL = MKCOL;
-methods.DELETE = DELETE;
+const methods = { GET, PUT, MKCOL, DELETE }
 
 console.log("Creating server");
 
 createServer((request, response) => {
-    const handler = methods[request.method] || notAllowed;
+ 
+    const handler = methods[<Method>request.method] || notAllowed;
 
     handler(request).catch((error: ServerResponse) => {
         if (error.status !== null) {
