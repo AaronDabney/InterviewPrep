@@ -1,9 +1,8 @@
 import { IncomingMessage } from "node:http";
-import { urlPath } from "./helpers";
-import { stat } from "node:fs/promises";
 import { createReadStream } from "node:fs";
+import { readdir, stat } from "node:fs/promises";
 import { lookup } from "mime-types";
-import { readdir } from "node:fs/promises";
+import { urlPath } from "./helpers";
 
 
 const GET = async function(request: IncomingMessage) {
