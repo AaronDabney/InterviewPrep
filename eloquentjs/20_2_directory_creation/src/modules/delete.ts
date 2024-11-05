@@ -1,16 +1,16 @@
 import { IncomingMessage } from "node:http";
 import { stat, rmdir, unlink } from "node:fs/promises";
-import { urlPath } from "./helpers";
+import { extractUrlPath } from "./helpers";
 
 
 const DELETE = async function(request: IncomingMessage) {
     console.log("Recieved DELETE request");
 
-    const path = urlPath(request.url);
+    const path = extractUrlPath(request.url);
+    let pathTargetInfo;
 
-    let stats;
     try {
-        stats = await stat(path)
+        pathTargetInfo = await stat(path)
     } catch (error) {   
         if (error.code !== "ENOENT") {
             throw error;
@@ -21,7 +21,7 @@ const DELETE = async function(request: IncomingMessage) {
         }
     }
 
-    if (stats.isDirectory()) {
+    if (pathTargetInfo.isDirectory()) {
         await rmdir(path);
     } else {
         await unlink(path);

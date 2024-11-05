@@ -14,7 +14,7 @@ function pipeStream(from: IncomingMessage, to: WriteStream) {
     });
 }
 
-function urlPath(url: string) {
+function extractUrlPath(url: string) {
     const { pathname } = new URL(url, "http://d");
     const path = resolve(decodeURIComponent(pathname).slice(1));
 
@@ -26,4 +26,4 @@ function urlPath(url: string) {
 }
 
 
-export { pipeStream, urlPath}
+export { pipeStream, extractUrlPath}

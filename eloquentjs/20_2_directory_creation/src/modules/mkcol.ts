@@ -1,16 +1,16 @@
 import { IncomingMessage } from "node:http";
 import { mkdir, stat } from "node:fs/promises";
-import { urlPath } from "./helpers";
+import { extractUrlPath } from "./helpers";
 
 
 const MKCOL = async function(request: IncomingMessage) {
     console.log("Recieved MKCOL request");
 
-    const path = urlPath(request.url);
-    let stats;
+    const path = extractUrlPath(request.url);
+    let pathTargetInfo;
 
     try {
-       stats = await stat(path);
+        pathTargetInfo = await stat(path);
     } catch (error) {
         const errorDueToMissingFileOrDirectory = error.code === "ENOENT";
 
