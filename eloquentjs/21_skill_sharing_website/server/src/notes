@@ -1,0 +1,9 @@
+HTTP server initialized
+
+Request comes in is passed through 'serveFromRouter'
+    if error handle it
+        return it
+    if there is a route in the routes that meets the criteria of the request then it is ~resolved~
+
+    if it cannot be resolved we run and return the next function
+        
