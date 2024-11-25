@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "target": "esnext",
+      "module": "commonjs",
+      "outDir": "dist",
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+      "lib": ["es2019"]
+    },
+    "include": ["src/*"],
+    "exclude": [
+      "node_modules",
+      "src/public/client*"
+    ],
+}
