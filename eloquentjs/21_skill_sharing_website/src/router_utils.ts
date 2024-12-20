@@ -3,9 +3,6 @@ import { ServerState } from "./server_util";
 import { Route } from "./routes";
 
 
-const defaultHeaders = { "Content-Type": "text/plain" };
-
-
 async function serveFromRouter(serverState: ServerState, routelist: Array<Route>, request: IncomingMessage, response: ServerResponse, fallbackCallback: Function) {
     let resolved = await resolve(request, serverState, routelist)
         .catch(error => {
@@ -21,7 +18,7 @@ async function serveFromRouter(serverState: ServerState, routelist: Array<Route>
         return fallbackCallback();
     }
 
-    let { body, status = 200, headers = defaultHeaders } = resolved;
+    let { body, status = 200, headers = { "Content-Type": "text/plain" } } = resolved;
 
     response.writeHead(status, headers)
     response.end(body)
@@ -38,6 +35,7 @@ async function resolve(request: IncomingMessage, serverState: ServerState, route
         }
 
         let parts = match.slice(1).map(decodeURIComponent);
+        
         return handler(serverState, ...parts, request);
     }
 }

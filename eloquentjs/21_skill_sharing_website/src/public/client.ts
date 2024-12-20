@@ -6,6 +6,7 @@ export interface Comment {
     message: string;
 }
 
+
 function runApp() {
     let user = localStorage.getItem("userName") || "Anon";
 
@@ -68,7 +69,7 @@ function updateApp(appData: any, dispatch: Function) {
         appData.talksDOM.children[i].update(appData.talks);
     }
 
-    // For all the new talks
+    // For all new talks
     for (let talkTitle in appData.talks) {
         if (!appData.talksBuffer[talkTitle]) {
             // Construct talk dom

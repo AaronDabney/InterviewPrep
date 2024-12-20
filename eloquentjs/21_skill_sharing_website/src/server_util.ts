@@ -1,4 +1,6 @@
 import { Server } from "http";
+import fs from "node:fs"
+
 
 export interface ServerState {
     talks: any;
@@ -6,9 +8,8 @@ export interface ServerState {
     version: number; 
 }
 
-const fs = require('fs');
 
-function packageTalksResponse(serverState: ServerState): any {
+function packageTalksResponse(serverState: ServerState) {
     let talksList = Object.keys(serverState.talks).map(title => serverState.talks[title]);
 
     return {
@@ -36,30 +37,18 @@ function updateServerState(serverState: ServerState) {
     return serverData;
 }
 
-
-/**
- * Adds a promise to the server state waitlist that represents a clients poll for new information
- * If there are no changes it means the promise is unresolved and server responds with status
- * indicating no new changes
- * @param {*} serverState 
- * @param {*} time 
- * @returns 
- */
-function waitForChanges(serverState: ServerState, timeInSeconds: number) {
+function waitForChanges(serverState: ServerState, delayInSeconds: number) {
     return new Promise(resolve => {
         serverState.waiting.push(resolve);
         setTimeout(() => {
-            // If the server doesn't include this specific promise resolve callback
-            let waitingPromiseResolved = !serverState.waiting.includes(resolve);
-            if (waitingPromiseResolved) { 
+            if (!serverState.waiting.includes(resolve)) { 
                 return;
             }
-            // Filter out the resolve in the queue
-            serverState.waiting = serverState.waiting.filter(r => r != resolve);
 
-            // Resolve
+            serverState.waiting = serverState.waiting.filter(res => res != resolve);
+
             resolve({ status: 304 });
-        }, timeInSeconds * 1000);
+        }, delayInSeconds * 1000);
     });
 }
 

@@ -107,14 +107,6 @@ async function postCommentHandler(serverState: ServerState, title: string, reque
     }
 }
 
-/**
- * Responds immediately to initial request for talks data
- * Responds to waiting requests upon server update
- * Responds to waiting requests after client defined delay if no server update occurs
- * @param {*} serverState 
- * @param {*} request 
- * @returns 
- */
 async function getTalksHandler(serverState: ServerState, request: IncomingMessage) {
     let tag = /"(.*)"/.exec(request.headers["if-none-match"]);
     let wait = /\bwait=(\d+)/.exec(<string>request.headers["prefer"]);
