@@ -1,54 +1,46 @@
 import { IncomingMessage, ServerResponse } from "node:http";
+import { ServerState } from "./server_util";
 import { Route } from "./routes";
-import { SkillShareServerState } from "./server";
 
 
-export async function resolve(request: IncomingMessage, serverState: SkillShareServerState, routes: Array<Route>) {
-    console.log("~resolve~")
+const defaultHeaders = { "Content-Type": "text/plain" };
+
+
+async function serveFromRouter(serverState: ServerState, routelist: Array<Route>, request: IncomingMessage, response: ServerResponse, fallbackCallback: Function) {
+    let resolved = await resolve(request, serverState, routelist)
+        .catch(error => {
+            const isHTTPError = error.status !== null;
+            if (isHTTPError) {
+                return error;
+            } else {
+                return { body: String(error), status: 500 }
+            }
+        });
+
+    if (!resolved) {
+        return fallbackCallback();
+    }
+
+    let { body, status = 200, headers = defaultHeaders } = resolved;
+
+    response.writeHead(status, headers)
+    response.end(body)
+}
+
+async function resolve(request: IncomingMessage, serverState: ServerState, routelist: Array<Route>) {
     let { pathname } = new URL(request.url, "http://d");
-    for (let {method, urlRegExp, handler} of routes) {
+
+    for (let { method, urlRegExp, handler } of routelist) {
         let match = urlRegExp.exec(pathname);
 
-        if (!match || request.method != method) {
+        if (!match || request.method !== method) {
             continue;
         }
-        
+
         let parts = match.slice(1).map(decodeURIComponent);
         return handler(serverState, ...parts, request);
     }
 }
 
 
-export async function serveFromRouter(serverState: SkillShareServerState, routes: Array<Route>, request: IncomingMessage, response: ServerResponse, fallbackCallback: Function) {
-    console.log("~serveFromRouter~")
-    
-    const defaultHeaders = {"Content-Type": "text/plain"}; //Why does this var exst?
-    
-    let resolved = await resolve(request, serverState, routes)
-        .catch(error => {
-            if (error.status != null) return error;
-            return { body: String(error), status: 500 };
-        });
-    
-    if (!resolved) {
-        console.log("~fallbackCallback~")
-        return fallbackCallback();
-    }
-
-    let { body, status = 200, headers = defaultHeaders} = await resolved; // Not sure why we are awaiting this twice
-    response.writeHead(status, headers);
-    response.end(body)
-}
-
-
-export function waitForChanges(serverState:SkillShareServerState, time: number) {
-    return new Promise(resolve => {
-        serverState.waiting.push(resolve);
-        setTimeout(() => {
-          if (!serverState.waiting.includes(resolve)) return;
-          
-          serverState.waiting = serverState.waiting.filter(r => r != resolve);
-          resolve({status: 304});
-        }, time * 1000);
-      });
-}
+export { serveFromRouter }
