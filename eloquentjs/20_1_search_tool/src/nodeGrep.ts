@@ -8,7 +8,7 @@ if (!regeExpString || filesAndFolders.length === 0) {
     throw "Missing arguments"
 }
 
-console.log(nodeGREP(regeExpString, filesAndFolders));
+console.log(nodeGrep(regeExpString, filesAndFolders));
 
 /**
  * Searches provided files, folders, and subfolders for file content that matches regexp
@@ -17,7 +17,7 @@ console.log(nodeGREP(regeExpString, filesAndFolders));
  * @param searchTargets 
  * @returns 
  */
-function nodeGREP(regexpString: string, searchTargets: Array<string>): Array<string> {
+function nodeGrep(regexpString: string, searchTargets: Array<string>): Array<string> {
     let validSearchTargets: Array<string> = searchTargets.filter(target => fs.existsSync(target));
     let invalidSearchTargets: Array<string> = searchTargets.filter(target => !fs.existsSync(target));
 
@@ -26,19 +26,15 @@ function nodeGREP(regexpString: string, searchTargets: Array<string>): Array<str
     }
 
     const regexp = new RegExp(regexpString);
+
     const matchingFiles: Array<string> = [];
-
-    const fileMatchesRegExp = (filePath: string) => regexp.test(fs.readFileSync(filePath, 'utf8'));
-    const isFile = (filePath: string) => fs.lstatSync(filePath).isFile();
-    const isFolder = (filePath: string) => fs.lstatSync(filePath).isDirectory();
-
     function recursiveSearch(item: string) {
-        if (isFile(item) && fileMatchesRegExp(item)) {
+        if (itemIsFile(item) && itemContentsMatchesRegexp(item, regexp)) {
             matchingFiles.push(item)
             return;
         }
 
-        if (isFolder(item)) {
+        if (itemIsFolder(item)) {
             let folderContents = fs.readdirSync(item)
             for (let subFolderItem of folderContents) {
                 recursiveSearch(`${item}/${subFolderItem}`)
@@ -51,4 +47,19 @@ function nodeGREP(regexpString: string, searchTargets: Array<string>): Array<str
     }
 
     return matchingFiles
+}
+
+function itemIsFile(filePath: string) {
+    const itemInfo = fs.lstatSync(filePath);
+    return itemInfo.isFile();
+}
+
+function itemIsFolder(filePath: string) {
+    const pathItemInfo = fs.lstatSync(filePath);
+    return pathItemInfo.isDirectory();
+}
+
+function itemContentsMatchesRegexp(filePath: string, regexp: RegExp) {
+    let itemContents = fs.readFileSync(filePath, 'utf8');
+    return regexp.test(itemContents);
 }
