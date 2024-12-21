@@ -55,8 +55,8 @@ function itemIsFile(filePath: string) {
 }
 
 function itemIsFolder(filePath: string) {
-    const pathItemInfo = fs.lstatSync(filePath);
-    return pathItemInfo.isDirectory();
+    const itemInfo = fs.lstatSync(filePath);
+    return itemInfo.isDirectory();
 }
 
 function itemContentsMatchesRegexp(filePath: string, regexp: RegExp) {
