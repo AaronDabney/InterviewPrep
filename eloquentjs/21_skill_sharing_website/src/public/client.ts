@@ -25,7 +25,7 @@ function runApp() {
 
     function dispatch(action: any) {
         appData = handleAction(appData, action);
-        updateApp(appData, dispatch); // sync state substitute
+        updateApp(appData, dispatch); 
     }
 
     document.body.appendChild(appData.DOM)
@@ -107,7 +107,7 @@ async function pollTalks(update: Function) {
         if (response.status == 304) {
             continue
         }
-        
+
         tag = response.headers.get("ETag");
         update(await response.json());
     }
