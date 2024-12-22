@@ -10,8 +10,6 @@ export interface ServerState {
 
 
 function packageTalksResponse(serverState: ServerState) {
-    // const talksList = Object.keys(serverState.talks).map(title => serverState.talks[title]);
-
     return {
         body: JSON.stringify(serverState.talks),
         headers: {
