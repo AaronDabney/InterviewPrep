@@ -8,9 +8,9 @@ export interface Comment {
 
 
 function runApp() {
-    let user = localStorage.getItem("userName") || "Anon";
+    const user = localStorage.getItem("userName") || "Anon";
 
-    let talksDOM = elt("div", { className: "talks" });
+    const talksDOM = elt("div", { className: "talks" });
 
     let appData = {
         user: user,
@@ -73,7 +73,7 @@ function updateApp(appData: any, dispatch: Function) {
     for (let talkTitle in appData.talks) {
         if (!appData.talksBuffer[talkTitle]) {
             // Construct talk dom
-            let newTalkDOM = <any>renderTalk(appData.talks[talkTitle], dispatch);
+            const newTalkDOM = <any>renderTalk(appData.talks[talkTitle], dispatch);
             newTalkDOM.update = (talks: any) => updateTalk(newTalkDOM, talks);
             newTalkDOM.talkTitle = talkTitle;
 
@@ -88,6 +88,7 @@ function updateApp(appData: any, dispatch: Function) {
 
 async function pollTalks(update: Function) {
     let tag = undefined;
+
     for (; ;) {
         let response;
         try {
@@ -102,20 +103,24 @@ async function pollTalks(update: Function) {
             await new Promise(resolve => setTimeout(resolve, 500));
             continue;
         }
-        if (response.status == 304) continue;
+
+        if (response.status == 304) {
+            continue
+        }
+        
         tag = response.headers.get("ETag");
         update(await response.json());
     }
 }
 
 function updateTalk(talkDOM: any, talks: any) {
-    let presenterDOM = <HTMLDivElement>document.getElementById(`${talkDOM.talkTitle}-presenter`);
-    let summaryDOM = <HTMLDivElement>document.getElementById(`${talkDOM.talkTitle}-summary`);
-    let commentsDOM = <HTMLDivElement>document.getElementById(`${talkDOM.talkTitle}-comments`)
+    const presenterDOM = <HTMLDivElement>document.getElementById(`${talkDOM.talkTitle}-presenter`);
+    const summaryDOM = <HTMLDivElement>document.getElementById(`${talkDOM.talkTitle}-summary`);
+    const commentsDOM = <HTMLDivElement>document.getElementById(`${talkDOM.talkTitle}-comments`)
 
-    let talkData = talks[talkDOM.talkTitle];
+    const talkData = talks[talkDOM.talkTitle];
 
-    if (!talkData) { // Talk not present in refresh indicates deletion
+    if (!talkData) { // The talk not being present indicates it was deleted by the server
         talkDOM.remove();
         return;
     }
@@ -149,7 +154,7 @@ function reportError(error: string | Error) {
 }
 
 function elt(type: string, props: any, ...children: any) {
-    let dom = document.createElement(type);
+    const dom = document.createElement(type);
 
     if (props) {
         Object.assign(dom, props)
@@ -192,7 +197,7 @@ function renderTalk(talk: any, dispatch: Function) {
         elt("form", {
             onsubmit(event: any) {
                 event.preventDefault();
-                let form = event.target;
+                const form = event.target;
                 dispatch({
                     type: "newComment",
                     talk: talk.title,
@@ -212,8 +217,9 @@ function renderComment(comment: any) {
 }
 
 function renderTalkForm(dispatch: Function) {
-    let title = <HTMLInputElement>elt("input", { type: "text" });
-    let summary = <HTMLInputElement>elt("input", { type: "text" });
+    const title = <HTMLInputElement>elt("input", { type: "text" });
+    const summary = <HTMLInputElement>elt("input", { type: "text" });
+
     return elt("form", {
         onsubmit(event: any) {
             event.preventDefault();

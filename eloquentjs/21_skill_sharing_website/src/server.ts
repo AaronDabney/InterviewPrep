@@ -6,8 +6,8 @@ import { routeList } from "./routes";
 import serveStatic from "serve-static";
 
 
-let fileServer = serveStatic("./public")
-let serverStoragePath = "serverData.json";
+const fileServer = serveStatic("./public")
+const serverStoragePath = "serverData.json";
 
 let serverState: ServerState = {
     talks: {},

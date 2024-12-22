@@ -4,7 +4,7 @@ import { Route } from "./routes";
 
 
 async function serveFromRouter(serverState: ServerState, routelist: Array<Route>, request: IncomingMessage, response: ServerResponse, fallbackCallback: Function) {
-    let resolved = await resolve(request, serverState, routelist)
+    const resolved = await resolve(request, serverState, routelist)
         .catch(error => {
             const isHTTPError = error.status !== null;
             if (isHTTPError) {
@@ -18,23 +18,23 @@ async function serveFromRouter(serverState: ServerState, routelist: Array<Route>
         return fallbackCallback();
     }
 
-    let { body, status = 200, headers = { "Content-Type": "text/plain" } } = resolved;
+    const { body, status = 200, headers = { "Content-Type": "text/plain" } } = resolved;
 
     response.writeHead(status, headers)
     response.end(body)
 }
 
 async function resolve(request: IncomingMessage, serverState: ServerState, routelist: Array<Route>) {
-    let { pathname } = new URL(request.url, "http://d");
+    const { pathname } = new URL(request.url, "http://d");
 
     for (let { method, urlRegExp, handler } of routelist) {
-        let match = urlRegExp.exec(pathname);
+        const match = urlRegExp.exec(pathname);
 
         if (!match || request.method !== method) {
             continue;
         }
 
-        let parts = match.slice(1).map(decodeURIComponent);
+        const parts = match.slice(1).map(decodeURIComponent);
         
         return handler(serverState, ...parts, request);
     }

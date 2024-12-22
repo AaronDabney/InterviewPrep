@@ -10,7 +10,7 @@ export interface ServerState {
 
 
 function packageTalksResponse(serverState: ServerState) {
-    let talksList = Object.keys(serverState.talks).map(title => serverState.talks[title]);
+    // const talksList = Object.keys(serverState.talks).map(title => serverState.talks[title]);
 
     return {
         body: JSON.stringify(serverState.talks),
@@ -23,7 +23,7 @@ function packageTalksResponse(serverState: ServerState) {
 }
 
 function updateServerState(serverState: ServerState) {
-    let serverData: ServerState = {
+    const serverData: ServerState = {
         talks: serverState.talks,
         version: serverState.version + 1,
         waiting: []
@@ -31,7 +31,7 @@ function updateServerState(serverState: ServerState) {
 
     fs.writeFileSync("serverData.json", JSON.stringify(serverData, null, 4));
 
-    let response = packageTalksResponse(serverState);
+    const response = packageTalksResponse(serverState);
     serverState.waiting.forEach(resolve => resolve(response));
 
     return serverData;

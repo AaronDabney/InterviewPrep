@@ -77,7 +77,7 @@ async function deleteTalkHandler(serverState: ServerState, title: string) {
 }
 
 async function putTalkHandler(serverState: ServerState, title: string, request: IncomingMessage) {
-    let talk = <Talk>await readJSON(request);
+    const talk = <Talk>await readJSON(request);
 
     if (!talk || typeof talk.presenter != "string" || typeof talk.summary != "string") {
         return { status: 400, body: "Bad talk data" };
@@ -95,7 +95,8 @@ async function putTalkHandler(serverState: ServerState, title: string, request: 
 }
 
 async function postCommentHandler(serverState: ServerState, title: string, request: IncomingMessage) {
-    let comment = <Comment>await readJSON(request);
+    const comment = <Comment>await readJSON(request);
+
     if (!comment || typeof comment.author != "string" || typeof comment.message != "string") {
         return { status: 400, body: "Bad comment data" };
     } else if (Object.hasOwn(serverState.talks, title)) {
@@ -108,8 +109,8 @@ async function postCommentHandler(serverState: ServerState, title: string, reque
 }
 
 async function getTalksHandler(serverState: ServerState, request: IncomingMessage) {
-    let tag = /"(.*)"/.exec(request.headers["if-none-match"]);
-    let wait = /\bwait=(\d+)/.exec(<string>request.headers["prefer"]);
+    const tag = /"(.*)"/.exec(request.headers["if-none-match"]);
+    const wait = /\bwait=(\d+)/.exec(<string>request.headers["prefer"]);
 
     if (!tag || Number(tag[1]) !== serverState.version) {
         return packageTalksResponse(serverState)
