@@ -5,13 +5,15 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 const config = {
     cache: false,
+    target: "node",
     entry: {
         server: path.resolve(__dirname, 'src/server.ts'),
         './public/client': './src/public/client.ts',
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].js'
+        filename: '[name].js',
+        clean: true
     },
     devServer: {
         open: true,
@@ -41,8 +43,16 @@ const config = {
     resolve: {
         extensions: ['.tsx', '.ts', '.jsx', '.js', '...'],
         fallback: {
-            'fs': false
+            'fs': false,
+            "path": false,
+            "url": false,
+            "util": false,
+            "stream": false,
+            "crypto": false,
+            "zlib": false
+            // 'stream': false
         }
+        
     },
 };
 
