@@ -15,10 +15,6 @@ function integerDivide(dividend, divisor) {
         throw new DivideByZeroError(`-> ${dividend} / ${divisor} <-`);
     }
 
-    if (dividend === 0) {
-        return 0;
-    }
-
     const sign = Math.sign(dividend) * Math.sign(divisor);
 
     let a = Math.abs(dividend);
