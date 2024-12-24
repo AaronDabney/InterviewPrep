@@ -1,18 +1,18 @@
-// Make a custom error type here for divide by zero in place of range error+
+class DivideByZeroError extends RangeError {}
+
 
 function referenceIntegerDivide(dividend, divisor) {
     if (divisor === 0) {
-        throw RangeError("Cannot divide by zero.");
+        throw new DivideByZeroError(`-> ${dividend} / ${divisor} <-`);
     }
 
     return Math.trunc(dividend / divisor);
 }
 
-
 /** No use of '/' or '*' operators */
 function integerDivide(dividend, divisor) {
     if (divisor === 0) {
-        throw RangeError("Cannot divide by zero.");
+        throw new DivideByZeroError(`-> ${dividend} / ${divisor} <-`);
     }
 
     if (dividend === 0) {
@@ -34,11 +34,11 @@ function integerDivide(dividend, divisor) {
 }
 
 
-const min = -10;
-const max =  10;
+const minTestRange = -10;
+const maxTestRange =  10;
 
-for (let dividend = min; dividend < max; dividend++) {
-    for (let divisor = min; divisor < max; divisor++) { 
+for (let dividend = minTestRange; dividend < maxTestRange; dividend++) {
+    for (let divisor = minTestRange; divisor < maxTestRange; divisor++) { 
         try {    
             if (integerDivide(dividend, divisor) !== referenceIntegerDivide(dividend, divisor)) {
                 console.log('Incorrect result');
@@ -47,9 +47,7 @@ for (let dividend = min; dividend < max; dividend++) {
 
             process.stdout.write('.')
         } catch(error) {
-            const isRangeError = error instanceof RangeError;
-
-            if (!isRangeError) {
+            if (!(error instanceof DivideByZeroError)) {
                 console.log('Unexpected error');
                 continue;
             }
@@ -65,3 +63,5 @@ for (let dividend = min; dividend < max; dividend++) {
 }
 
 console.log("\nComplete")
+
+// ->  ........\nComplete

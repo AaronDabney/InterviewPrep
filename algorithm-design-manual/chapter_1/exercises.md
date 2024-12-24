@@ -2,15 +2,21 @@
 
 ![alt text](img/1.png)
 
+----
+
 (3) **Design/draw a road network with two points a and b such that the fastest
 route between a and b is not the shortest route.**
 
 ![alt text](img/3.png)
 
+----
+
 (4) **Design/draw a road network with two points a and b such that the shortest
 route between a and b is not the route with the fewest turns.**
 
 ![alt text](img/4.png)
+
+----
 
 (5) **The knapsack problem is as follows: given a set of integers S = {s1, s2, . . . , sn},
 and a target number T , find a subset of S that adds up exactly to T . For ex-
@@ -23,14 +29,18 @@ leaves the knapsack completely full, even though a full-knapsack solution exists
 
 ![alt text](img/5a.png)
 
+
 (b) **Put the elements of S in the knapsack from smallest to largest, that is, the
     best-fit algorithm.**
 
 ![alt text](img/5b.png)
 
+
 (c) **Put the elements of S in the knapsack from largest to smallest.**
 
 ![alt text](img/5c.png)
+
+----
 
 (6) **The set cover problem is as follows: given a set S of subsets S1, . . . , Sm of
 the universal set U = {1, ..., n}, find the smallest subset of subsets T ⊆ S such
@@ -46,6 +56,7 @@ are covered.`
 
 ![alt text](img/6.png)
 
+
 (7)  **The maximum clique problem in a graph G = (V, E) asks for the largest
 subset C of vertices V such that there is an edge in E between every pair of
 vertices in C. Find a counterexample for the following algorithm:**
@@ -56,6 +67,8 @@ currently in the clique. Repeat until all vertices have been considered.`
 
 ![alt text](img/7.png)
 
+----
+
 (22) **How many words are there in this textbook?**
 
 There seems to be about 40 lines per page and an average 12 words per line on a full page with no graphics.
@@ -64,7 +77,7 @@ Graphics, figures, and illustrations seem to occupy roughly 40% of all space tha
 
 `40 * 12 * (1 - 0.4) = 288 words per page`
 
-My coffee scale puts a sheet of printer paper at 4.8 grams
+My kitchen scale puts a sheet of printer paper at 4.8 grams
 The book weighs 1538.7 grams
 
 `Book paper area / Printer paper area = ~0.7`
@@ -73,6 +86,7 @@ The book weighs 1538.7 grams
 
 `288 words per page * 457.14 pages = 131616 words`
 
+----
 
 (24) **Estimate how many cities and towns there are in the United States.**
 
@@ -81,7 +95,7 @@ There seems to be a relationship between size of a community and frequency of co
 Lets assume:
 - A directed tree that models the support structure of a single top-level community.
 - The split at each tree level is 4 (a community is directly supported by 4 smaller communities).
-- The tree splits 5 times.
+- The tree splits 5 times
 - Each U.S. State contains an average of 2.5 top level cities
 
 ![alt text](img/24.png)
@@ -93,6 +107,8 @@ Lets assume:
 This integral suggests each top-level city would require the support of 340 cities. (341 including itself)
 
 `50 U.S states * 2.5 Top Level Cities per state * 341 Communities per Top Level City = 42625 towns and cities`
+
+----
 
 (28) 
 
@@ -113,10 +129,12 @@ Total RAM fetch speed would be approximately:
 
 RAM access speed takes place on the order of nanoseconds.
 
+
 **(b) Is disk drive access time normally measured in milliseconds (thousandths of
 a second) or microseconds (millionths of a second)?**
 
 Assuming hard disk drive fetch speed is about 1000 times worse than RAM, its likely its fetch time is measured in microseconds.
+
 
 **(c) How many instructions can your CPU execute in one year if the machine is left running all the time?**
 
@@ -124,7 +142,9 @@ Using our prior estimation of `4.992ns per instruction` a single core CPU could 
 
 `31536000 seconds per year / 0.000000004992s = ~6317 trillion instructions per year`
 
+----
+
 (32) **Write a function to perform integer division without using either the / or *
 operators. Find a fast way to do it.**
 
-See integer.js
+See divide.js
