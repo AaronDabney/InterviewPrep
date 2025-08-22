@@ -1,6 +1,6 @@
 class DivideByZeroError extends RangeError {}
 
-
+/** 'Normal' integer division */
 function referenceIntegerDivide(dividend, divisor) {
     if (divisor === 0) {
         throw new DivideByZeroError(`-> ${dividend} / ${divisor} <-`);
@@ -19,6 +19,7 @@ function integerDivide(dividend, divisor) {
 
     let a = Math.abs(dividend);
     const b = Math.abs(divisor);
+    
     let tally = 0;
 
     while (a >= b) {
@@ -26,9 +27,10 @@ function integerDivide(dividend, divisor) {
         tally++;
     }
 
-    return tally * sign;
+    return sign > 0 ? tally : -tally;
 }
 
+/** Testing */
 
 const minTestRange = -10;
 const maxTestRange =  10;
